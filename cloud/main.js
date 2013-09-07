@@ -132,5 +132,5 @@ function signUpToXMPP(userId,password){
                          }
     });
     
-}
+});
 
