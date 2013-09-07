@@ -3,7 +3,7 @@
 var express = require('express');
 var usr = express();
 
-//hhtp://HOST/user/register/username/123/password/123/email/123@qq.com
+//  //HOST/user/register/username/123/password/123/email/123@qq.com
 usr.get('/user/register/username/:id/password/:id/email/:id', function(request, response, next){
         
         var username = request.username.id;
