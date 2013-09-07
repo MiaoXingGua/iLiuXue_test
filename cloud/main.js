@@ -45,14 +45,23 @@ AV.Cloud.define('register', function(request, response) {
 });
 
 //登录
-AV.User.logIn("myname", "mypass", {
-              success: function(user) {
-              // Do stuff after successful login.
-              },
-              error: function(user, error) {
-              // The login failed. Check error to see why.
-              }
-              });
+AV.Cloud.define('login', function(request, response) {
+                
+                var username = request.params.username;
+                var password = request.params.password;
+
+                
+                AV.User.logIn(username, password, {
+                              success: function(user) {
+                              // Do stuff after successful login.
+                              },
+                              error: function(user, error) {
+                              // The login failed. Check error to see why.
+                              }
+                              });
+                }
+});
+
 
 
 
