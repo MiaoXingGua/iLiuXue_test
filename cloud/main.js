@@ -3,9 +3,9 @@
 //var name = require('cloud/name.js');
 var user = require('cloud/user.js')
 
-AV.Cloud.define("hello", function(request, response) {
-  response.success("hello !" + request.params.name);
-});
+//AV.Cloud.define("hello", function(request, response) {
+//  response.success("hello !" + request.params.name);
+//});
 
 
 
