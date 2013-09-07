@@ -10,17 +10,17 @@ AV.Cloud.define("hello", function(request, response) {
 
 
 
-//AV.Cloud.define("register", function(request, response) {
-//
-//                var username = request.params.username;
-//                var password = request.params.password;
-//                var email = request.params.email;
-//
-//                if (username && password && email){
-//                console.log(username + password + email);
-//                response.success(username + password + email);
-//                }
-//
-//                });
+AV.Cloud.define('register', function(request, response) {
+
+                var username = request.params.username;
+                var password = request.params.password;
+                var email = request.params.email;
+
+                if (username && password && email){
+                console.log(username + password + email);
+                response.success(username + password + email);
+                }
+
+                });
 
 
