@@ -13,7 +13,7 @@ AV.Cloud.define("hello", function(request, response) {
   response.success("hello !" + request.params.name);
 });
 
-
+//注册
 AV.Cloud.define('register', function(request, response) {
 
     var username = request.params.username;
@@ -43,4 +43,18 @@ AV.Cloud.define('register', function(request, response) {
         });
     }
 });
+
+//登录
+AV.User.logIn("myname", "mypass", {
+              success: function(user) {
+              // Do stuff after successful login.
+              },
+              error: function(user, error) {
+              // The login failed. Check error to see why.
+              }
+              });
+
+
+
+
 
