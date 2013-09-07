@@ -59,7 +59,6 @@ AV.Cloud.define('login', function(request, response) {
                               // The login failed. Check error to see why.
                               }
                               });
-                }
 });
 
 
