@@ -9,7 +9,7 @@ AV.Cloud.define("hello", function(request, response) {
 
 
 
-AV.Cloud.define('register', function(request, response) {
+AV.Cloud.define("register", function(request, response) {
                 
                 var username = request.params.username;
                 var password = request.params.password;
