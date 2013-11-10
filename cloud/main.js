@@ -1,68 +1,201 @@
-// Use AV.Cloud.define to define as many cloud functions as you want.
-// For example:
-//var name = require('cloud/name.js');
-//var user = require('cloud/user.js')
 
-//var XMPP_SEVER = "http://115.28.44.100:7070/http-bind/";
-//var XMPP_HOST = "@115.28.44.100";
+var Thread = AV.Object.extend('Thread');
+var CreditRuleLog = AV.Object.extend('CreditRuleLog');
 
-//var url = require('cloud/url.js')
-//var strophe = require('./strophejs/strophe.js')
+//发帖前
+AV.Cloud.beforeSave('Thread', function(request, response) {
 
-AV.Cloud.define("hello", function(request, response) {
-  response.success("hello !" + request.params.name);
-});
+    var user = request.user;
+    var credits = user.get("credits");
 
-//注册
-AV.Cloud.define('register', function(request, response) {
+    var thread = request.object;
+    var price = thread.get('price');
 
-    var username = request.params.username;
-    var password = request.params.password;
-    var email = request.params.email;
-
-    if (username && password && email){
-                
-        var user = new AV.User();
-        user.set("username", username);
-        user.set("password", password);
-        user.set("email", email);
-        
-        strophe.
-                
-        user.signUp(null, {
-                success: function(user) {
-                    
-                    
-                    
-                },
-                error: function(user, error) {
-        
-                    alert("Error: " + error.code + " " + error.message);
-                    
-                }
-        });
+    if (credits > price)
+    {
+        response.error('积分不足');
     }
+    else
+    {
+        response.success();
+    }
+
 });
 
-//登录
-AV.Cloud.define('login', function(request, response) {
-                
-                var username = request.params.username;
-                var password = request.params.password;
+//发帖后
+AV.Cloud.afterSave('Thread', function(request) {
 
-                
-                AV.User.logIn(username, password, {
-                              success: function(user) {
-                              // Do stuff after successful login.
-                              },
-                              error: function(user, error) {
-                              // The login failed. Check error to see why.
-                              }
-                              });
+    var thread = request.object;
+    var updatedAt = Thread.get('updatedAt');
+
+    var price = Thread.get('price');
+
+    thread.set('lastPostAt',updatedAt);
+
+    //提交问题
+    var type = 11;
+    var user = request.user;
+
+    //查找规则
+    var crQuery = new AV.Query('CreditRule');
+    crQuery.equalTo('type', type);
+    crQuery.first().then(function(object){
+
+        var c = object.get('credits')-price;
+        var e = object.get('experience');
+
+        //调整积分
+        user.increment('credits',c);
+        //调整经验值
+        user.increment('experience',e);
+
+        return user.save();
+
+    }).then(function(user,c,e){
+
+            //增加积分变更记录
+            var creditRuleLog = new CreditRuleLog();
+            creditRuleLog.set('user',user);
+            creditRuleLog.set('type',type);
+            creditRuleLog.set('accumulativeCredit',c);
+            creditRuleLog.set('accumulativeExperience',e);
+            return creditRuleLog.save();
+
+        }).then(function(user){
+
+
+        },function(error){
+
+
+        });
 });
 
 
+//发回复后
+AV.Cloud.afterSave('Post', function(request, response){
+
+    var post = request.object;
+    if (post.get('createdAt') != post.get('updateAt'))
+        return;
+
+    var user = request.user;
+    var thread = post.get('thread');
+
+    //回复
+    thread.relation('posts').add(post);
+    //回复数
+    thread.increment('numberOfPosts');
+    //最后回复人
+    thread.set('lastPoster',user);
+    //最后回复时间
+    thread.set('lastPostAt',post.get('createdAt'));
+
+    thread.save().then(function(thread){
+
+        //user的回复数+1
+        user.get('userCount').increment('numberOfPosts');
+
+        return user.save();
+
+//        }).then(function(user){
+
+    }).then(function(user){
+
+            var type = 21;
+            //查找规则
+            var crQuery = new AV.Query('CreditRule');
+            crQuery.equalTo('type', type);
+            return crQuery.first();
+
+        }).then(function(object){
+
+            var c = object.get('credits');
+            var e = object.get('experience');
+
+            //调整积分
+            user.increment('credits',c);
+            //调整经验值
+            user.increment('experience',e);
+            return user.save();
+
+        }).then(function(user,c,e){
+
+            //增加积分变更记录
+            var creditRuleLog = new CreditRuleLog();
+            creditRuleLog.set('user',user);
+            creditRuleLog.set('type',type);
+            creditRuleLog.set('accumulativeCredit',c);
+            creditRuleLog.set('accumulativeExperience',e);
+            return creditRuleLog.save();
+
+        },function(error){
 
 
+        });
+});
+
+//发评论后
+AV.Cloud.afterSave('Comment', function(request, response){
 
 
+    var comment = request.object;
+    if (comment.get('createdAt') != comment.get('updateAt'))
+        return;
+
+    var post = post.get('post');
+    var user = request.user;
+
+    post.increment('numberOfPosts');
+
+    //评论
+    post.relation('comments').add(comment);
+    //评论数
+    post.increment('numberOfComments');
+    //最后评论人
+    post.set('lastCommenter',user);
+    //最后评论时间
+    post.set('lastCommentAt',comment.get('createdAt'));
+
+    post.save().then(function(thread){
+
+        //user的评论数+1
+        user.get('userCount').increment('numberOfComments');
+
+        return user.save();
+
+//        }).then(function(user){
+
+    }).then(function(user){
+
+            var type = 22;
+            //查找规则
+            var crQuery = new AV.Query('CreditRule');
+            crQuery.equalTo('type', type);
+            return crQuery.first();
+
+        }).then(function(object){
+
+            var c = object.get('credits');
+            var e = object.get('experience');
+
+            //调整积分
+            user.increment('credits',c);
+            //调整经验值
+            user.increment('experience',e);
+            return user.save();
+
+        }).then(function(user,c,e){
+
+            //增加积分变更记录
+            var creditRuleLog = new CreditRuleLog();
+            creditRuleLog.set('user',user);
+            creditRuleLog.set('type',type);
+            creditRuleLog.set('accumulativeCredit',c);
+            creditRuleLog.set('accumulativeExperience',e);
+            return creditRuleLog.save();
+
+        },function(error){
+
+
+        });
+});
