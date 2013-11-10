@@ -8,15 +8,24 @@ AV.Cloud.beforeSave('Thread', function(request, response) {
     var user = request.user;
     var credits = user.get("credits");
 
+
+    console.log('用户积分');
+    console.log(credits);
+
     var thread = request.object;
     var price = thread.get('price');
 
-    if (credits > price)
+    console.log('悬赏积分');
+    console.log(price);
+
+    if (credits > price+5)
     {
+        console.log('积分不足');
         response.error('积分不足');
     }
     else
     {
+        console.log('积分足够');
         response.success();
     }
 
@@ -41,7 +50,7 @@ AV.Cloud.afterSave('Thread', function(request) {
     crQuery.equalTo('type', type);
     crQuery.first().then(function(object){
 
-        var c = object.get('credits')-price;
+        var c = object.get('credits')-(price+5);
         var e = object.get('experience');
 
         //调整积分
