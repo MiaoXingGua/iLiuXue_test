@@ -32,52 +32,52 @@ AV.Cloud.beforeSave('Thread', function(request, response) {
 });
 
 //发帖后
-AV.Cloud.afterSave('Thread', function(request) {
-
-    var thread = request.object;
-    var updatedAt = Thread.get('updatedAt');
-
-    var price = Thread.get('price');
-
-    thread.set('lastPostAt',updatedAt);
-
-    //提交问题
-    var type = 11;
-    var user = request.user;
-
-    //查找规则
-    var crQuery = new AV.Query('CreditRule');
-    crQuery.equalTo('type', type);
-    crQuery.first().then(function(object){
-
-        var c = object.get('credits')-(price+5);
-        var e = object.get('experience');
-
-        //调整积分
-        user.increment('credits',c);
-        //调整经验值
-        user.increment('experience',e);
-
-        return user.save();
-
-    }).then(function(user,c,e){
-
-            //增加积分变更记录
-            var creditRuleLog = new CreditRuleLog();
-            creditRuleLog.set('user',user);
-            creditRuleLog.set('type',type);
-            creditRuleLog.set('accumulativeCredit',c);
-            creditRuleLog.set('accumulativeExperience',e);
-            return creditRuleLog.save();
-
-        }).then(function(user){
-
-
-        },function(error){
-
-
-        });
-});
+//AV.Cloud.afterSave('Thread', function(request) {
+//
+//    var thread = request.object;
+//    var updatedAt = Thread.get('updatedAt');
+//
+//    var price = Thread.get('price');
+//
+//    thread.set('lastPostAt',updatedAt);
+//
+//    //提交问题
+//    var type = 11;
+//    var user = request.user;
+//
+//    //查找规则
+//    var crQuery = new AV.Query('CreditRule');
+//    crQuery.equalTo('type', type);
+//    crQuery.first().then(function(object){
+//
+//        var c = object.get('credits')-(price+5);
+//        var e = object.get('experience');
+//
+//        //调整积分
+//        user.increment('credits',c);
+//        //调整经验值
+//        user.increment('experience',e);
+//
+//        return user.save();
+//
+//    }).then(function(user,c,e){
+//
+//            //增加积分变更记录
+//            var creditRuleLog = new CreditRuleLog();
+//            creditRuleLog.set('user',user);
+//            creditRuleLog.set('type',type);
+//            creditRuleLog.set('accumulativeCredit',c);
+//            creditRuleLog.set('accumulativeExperience',e);
+//            return creditRuleLog.save();
+//
+//        }).then(function(user){
+//
+//
+//        },function(error){
+//
+//
+//        });
+//});
 
 
 //发回复后
