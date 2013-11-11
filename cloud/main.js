@@ -113,11 +113,9 @@ AV.Cloud.afterSave('Post', function(request, response){
 
         userCount.increment('numberOfPosts');
 
-        return user.save();
+        return userCount.save();
 
-//        }).then(function(user){
-
-    }).then(function(user){
+    }).then(function(){
 
             var type = 21;
             //查找规则
