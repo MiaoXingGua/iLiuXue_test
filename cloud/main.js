@@ -147,6 +147,10 @@ AV.Cloud.afterSave('Post', function(request, response){
             creditRuleLog.set('accumulativeExperience',e);
             return creditRuleLog.save();
 
+        }).then(function(obj) {
+
+            console.dir(obj);
+
         },function(error){
 
             console.dir(error);
