@@ -34,9 +34,6 @@ AV.Cloud.beforeSave('Thread', function(request, response) {
 //发帖后
 AV.Cloud.afterSave('Thread', function(request) {
 
-    var c = object.get('credits')-(price+5);
-    var e = object.get('experience');
-
     var thread = request.object;
     var updatedAt = Thread.get('updatedAt');
 
@@ -52,6 +49,9 @@ AV.Cloud.afterSave('Thread', function(request) {
     var crQuery = new AV.Query('CreditRule');
     crQuery.equalTo('type', type);
     crQuery.first().then(function(object){
+
+        var c = object.get('credits')-(price+5);
+        var e = object.get('experience');
 
         //调整积分
         user.increment('credits',c);
@@ -72,6 +72,7 @@ AV.Cloud.afterSave('Thread', function(request) {
 
         }).then(function(obj){
 
+
             console.log('发帖成功');
             console.dir(obj);
 
@@ -88,8 +89,9 @@ AV.Cloud.afterSave('Thread', function(request) {
 AV.Cloud.afterSave('Post', function(request, response){
 
     var post = request.object;
-    if (post.get('createdAt') != post.get('updateAt'))
-        return;
+//    if (post.get('createdAt') != post.get('updateAt'))
+//        return;
+
 
     var user = request.user;
     var thread = post.get('thread');
@@ -119,7 +121,7 @@ AV.Cloud.afterSave('Post', function(request, response){
 
         return userCount.save();
 
-    }).then(function(){
+         }).then(function(){
 
             var type = 21;
             //查找规则
@@ -130,8 +132,11 @@ AV.Cloud.afterSave('Post', function(request, response){
 
         }).then(function(object){
 
+            console.dir(object);
+
             var c = object.get('credits');
             var e = object.get('experience');
+            console.log(c+e);
 
             console.log('调整积分');
             console.log(c+e);
@@ -142,7 +147,7 @@ AV.Cloud.afterSave('Post', function(request, response){
             user.increment('experience',e);
             return user.save();
 
-        }).then(function(user,c,e){
+        }).then(function(user){
 
             //增加积分变更记录
             console.log('增加积分变更记录');
