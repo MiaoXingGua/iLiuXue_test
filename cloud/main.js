@@ -60,7 +60,7 @@ AV.Cloud.afterSave('Thread', function(request) {
 
         return user.save();
 
-    }).then(function(user){
+        }).then(function(user){
 
             //增加积分变更记录
             var creditRuleLog = new CreditRuleLog();
@@ -70,11 +70,15 @@ AV.Cloud.afterSave('Thread', function(request) {
             creditRuleLog.set('accumulativeExperience',e);
             return creditRuleLog.save();
 
-        }).then(function(user){
+        }).then(function(obj){
 
+            console.log('发帖成功');
+            console.dir(obj);
 
         },function(error){
 
+            console.log('发帖失败');
+            console.dir(error);
 
         });
 });
