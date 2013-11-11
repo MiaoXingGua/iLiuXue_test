@@ -8,7 +8,6 @@ AV.Cloud.beforeSave('Thread', function(request, response) {
     var user = request.user;
     var credits = user.get("credits");
 
-
     console.log('用户积分');
     console.log(credits);
 
@@ -91,8 +90,11 @@ AV.Cloud.afterSave('Post', function(request, response){
     var user = request.user;
     var thread = post.get('thread');
 
+    console.log('thread');
+    console.dir(thread);
+
     //回复
-    thread.relation('posts').add(post);
+//    thread.relation('posts').add(post);
     //回复数
     thread.increment('numberOfPosts');
     //最后回复人
@@ -103,6 +105,9 @@ AV.Cloud.afterSave('Post', function(request, response){
     thread.save().then(function(thread){
 
         //user的回复数+1
+        console.log('userCount');
+        console.log(user.get('userCount'));
+
         user.get('userCount').increment('numberOfPosts');
 
         return user.save();
@@ -113,6 +118,7 @@ AV.Cloud.afterSave('Post', function(request, response){
 
             var type = 21;
             //查找规则
+            console.log('查找规则');
             var crQuery = new AV.Query('CreditRule');
             crQuery.equalTo('type', type);
             return crQuery.first();
@@ -122,6 +128,7 @@ AV.Cloud.afterSave('Post', function(request, response){
             var c = object.get('credits');
             var e = object.get('experience');
 
+            console.log('调整积分');
             //调整积分
             user.increment('credits',c);
             //调整经验值
@@ -131,6 +138,7 @@ AV.Cloud.afterSave('Post', function(request, response){
         }).then(function(user,c,e){
 
             //增加积分变更记录
+            console.log('增加积分变更记录');
             var creditRuleLog = new CreditRuleLog();
             creditRuleLog.set('user',user);
             creditRuleLog.set('type',type);
