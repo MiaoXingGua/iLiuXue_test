@@ -113,7 +113,7 @@ AV.Cloud.afterSave('Post', function(request, response){
 
         userCount.increment('numberOfPosts');
 
-        return userCount.save();
+        return user.save();
 
     }).then(function(){
 
@@ -149,6 +149,7 @@ AV.Cloud.afterSave('Post', function(request, response){
 
         },function(error){
 
+            console.dir(error);
 
         });
 });
