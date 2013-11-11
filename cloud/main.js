@@ -130,6 +130,8 @@ AV.Cloud.afterSave('Post', function(request, response){
             var e = object.get('experience');
 
             console.log('调整积分');
+            console.log(c+e);
+
             //调整积分
             user.increment('credits',c);
             //调整经验值
@@ -140,6 +142,8 @@ AV.Cloud.afterSave('Post', function(request, response){
 
             //增加积分变更记录
             console.log('增加积分变更记录');
+            console.log(c+e);
+
             var creditRuleLog = new CreditRuleLog();
 
             console.dir(creditRuleLog);
