@@ -94,7 +94,7 @@ AV.Cloud.afterSave('Post', function(request, response){
     console.dir(thread);
 
     //回复
-//    thread.relation('posts').add(post);
+    thread.relation('posts').add(post);
     //回复数
     thread.increment('numberOfPosts');
     //最后回复人
