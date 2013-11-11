@@ -141,6 +141,9 @@ AV.Cloud.afterSave('Post', function(request, response){
             //增加积分变更记录
             console.log('增加积分变更记录');
             var creditRuleLog = new CreditRuleLog();
+
+            console.dir(creditRuleLog);
+
             creditRuleLog.set('user',user);
             creditRuleLog.set('type',type);
             creditRuleLog.set('accumulativeCredit',c);
