@@ -106,9 +106,12 @@ AV.Cloud.afterSave('Post', function(request, response){
 
         //user的回复数+1
         console.log('userCount');
-        console.log(user.get('userCount'));
 
-        user.get('userCount').increment('numberOfPosts');
+        var userCount = user.get('userCount');
+
+        console.dir(userCount);
+
+        userCount.increment('numberOfPosts');
 
         return user.save();
 
