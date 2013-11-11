@@ -34,6 +34,9 @@ AV.Cloud.beforeSave('Thread', function(request, response) {
 //发帖后
 AV.Cloud.afterSave('Thread', function(request) {
 
+    var c = object.get('credits')-(price+5);
+    var e = object.get('experience');
+
     var thread = request.object;
     var updatedAt = Thread.get('updatedAt');
 
@@ -50,9 +53,6 @@ AV.Cloud.afterSave('Thread', function(request) {
     crQuery.equalTo('type', type);
     crQuery.first().then(function(object){
 
-        var c = object.get('credits')-(price+5);
-        var e = object.get('experience');
-
         //调整积分
         user.increment('credits',c);
         //调整经验值
@@ -60,7 +60,7 @@ AV.Cloud.afterSave('Thread', function(request) {
 
         return user.save();
 
-    }).then(function(user,c,e){
+    }).then(function(user){
 
             //增加积分变更记录
             var creditRuleLog = new CreditRuleLog();
