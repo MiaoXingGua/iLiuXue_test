@@ -152,10 +152,12 @@ AV.Cloud.afterSave('Post', function(request, response){
 
         }).then(function(obj) {
 
+            console.log('发回复成功');
             console.dir(obj);
 
         },function(error){
 
+            console.log('发回复失败');
             console.dir(error);
 
         });
