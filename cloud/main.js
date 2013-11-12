@@ -70,6 +70,11 @@ AV.Cloud.afterSave('Thread', function(request) {
 
             return userCount.save();
 
+        },function(error){
+
+            console.log('发帖数+1失败');
+            console.dir(error);
+
         }).then(function(userCount){
 
             //调整积分
@@ -81,7 +86,7 @@ AV.Cloud.afterSave('Thread', function(request) {
 
         },function(error){
 
-                console.log('加积分失败');
+                console.log('调整积分失败');
                 console.dir(error);
 
             }).then(function(user){
