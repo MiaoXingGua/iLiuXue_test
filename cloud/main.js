@@ -112,7 +112,7 @@ AV.Cloud.afterSave('Post', function(request, response){
     thread.save().then(function(thread){
 
         //user的回复数+1
-        console.log('userCount');
+//        console.log('userCount');
 
         var userCount = user.get('userCount');
 
@@ -136,13 +136,13 @@ AV.Cloud.afterSave('Post', function(request, response){
             console.log('调整积分');
             console.dir(object);
 
-//            var c = object.get('credits');
-//            var e = object.get('experience');
-//
-//
-//            console.log(c);
-//            console.log(e);
-//            console.log(c+e);
+            var c = object.get('credits');
+            var e = object.get('experience');
+
+
+            console.log(c);
+            console.log(e);
+            console.log(c+e);
 //
 //            //调整积分
 //            user.increment('credits',c);
