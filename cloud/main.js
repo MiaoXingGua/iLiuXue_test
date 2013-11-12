@@ -46,9 +46,14 @@ AV.Cloud.afterSave('Thread', function(request) {
 
     var creditRuleId;
 
-    //    var updatedAt = thread.get('updatedAt');
+
     //最后回复时间=发帖时间
-    thread.set('lastPostAt',thread.get('updatedAt'));
+    var updatedAt = thread.get('updatedAt');
+
+    console.log(updatedAt);
+    console.dir(updatedAt);
+
+    thread.set('lastPostAt',updatedAt);
     thread.save().then(function(thread){
 
             //查找规则
@@ -61,7 +66,6 @@ AV.Cloud.afterSave('Thread', function(request) {
              creditRuleId = AV.Object.createWithoutData("CreditRule", object.id);
              _credits = object.get('credits')-price;
              _experience = object.get('experience');
-
 
             //user的发帖数+1
             var userCount = user.get('userCount');
