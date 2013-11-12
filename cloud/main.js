@@ -92,6 +92,7 @@ AV.Cloud.afterSave('Post', function(request, response){
 //    if (post.get('createdAt') != post.get('updateAt'))
 //        return;
 
+    var type = 21;
 
     var user = request.user;
     var thread = post.get('thread');
@@ -123,7 +124,7 @@ AV.Cloud.afterSave('Post', function(request, response){
 
          }).then(function(){
 
-            var type = 21;
+
             //查找规则
             console.log('查找规则');
             var crQuery = new AV.Query('CreditRule');
@@ -136,9 +137,10 @@ AV.Cloud.afterSave('Post', function(request, response){
 
             var c = object.get('credits');
             var e = object.get('experience');
-            console.log(c+e);
 
             console.log('调整积分');
+            console.log(c);
+            console.log(e);
             console.log(c+e);
 
             //调整积分
@@ -151,6 +153,8 @@ AV.Cloud.afterSave('Post', function(request, response){
 
             //增加积分变更记录
             console.log('增加积分变更记录');
+            console.log(c);
+            console.log(e);
             console.log(c+e);
 
             var creditRuleLog = new CreditRuleLog();
