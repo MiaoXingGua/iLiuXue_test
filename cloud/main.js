@@ -51,7 +51,7 @@ AV.Cloud.afterSave('Thread', function(request) {
     var updatedAt = thread.get('updatedAt');
 
     console.log(updatedAt);
-    console.dir(updatedAt);
+    console.dir(thread);
 
     thread.set('lastPostAt',updatedAt);
     thread.save().then(function(thread){
