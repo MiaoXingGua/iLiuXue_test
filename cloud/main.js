@@ -136,37 +136,37 @@ AV.Cloud.afterSave('Post', function(request, response){
             console.log('调整积分');
             console.dir(object);
 
-            var c = object.get('credits');
-            var e = object.get('experience');
+//            var c = object.get('credits');
+//            var e = object.get('experience');
+//
+//
+//            console.log(c);
+//            console.log(e);
+//            console.log(c+e);
+//
+//            //调整积分
+//            user.increment('credits',c);
+//            //调整经验值
+//            user.increment('experience',e);
+//            return user.save();
 
+//        }).then(function(user){
 
-            console.log(c);
-            console.log(e);
-            console.log(c+e);
-
-            //调整积分
-            user.increment('credits',c);
-            //调整经验值
-            user.increment('experience',e);
-            return user.save();
-
-        }).then(function(user){
-
-            //增加积分变更记录
-            console.log('增加积分变更记录');
-            console.log(c);
-            console.log(e);
-            console.log(c+e);
-
-            var creditRuleLog = new CreditRuleLog();
-
-            console.dir(creditRuleLog);
-
-            creditRuleLog.set('user',user);
-            creditRuleLog.set('type',type);
-            creditRuleLog.set('accumulativeCredit',c);
-            creditRuleLog.set('accumulativeExperience',e);
-            return creditRuleLog.save();
+//            //增加积分变更记录
+//            console.log('增加积分变更记录');
+//            console.log(c);
+//            console.log(e);
+//            console.log(c+e);
+//
+//            var creditRuleLog = new CreditRuleLog();
+//
+//            console.dir(creditRuleLog);
+//
+//            creditRuleLog.set('user',user);
+//            creditRuleLog.set('type',type);
+//            creditRuleLog.set('accumulativeCredit',c);
+//            creditRuleLog.set('accumulativeExperience',e);
+//            return creditRuleLog.save();
 
         }).then(function(obj) {
 
