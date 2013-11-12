@@ -48,20 +48,15 @@ AV.Cloud.afterSave('Thread', function(request) {
 
 
     //最后回复时间=发帖时间
-    var updatedAt = thread.get('updatedAt');
+//    var updatedAt = thread.get('updatedAt');
+//
+//    thread.set('lastPostAt',updatedAt);
+//    thread.save().then(function(thread){
 
-    console.log(updatedAt);
-    console.dir(thread);
-
-    thread.set('lastPostAt',updatedAt);
-    thread.save().then(function(thread){
-
-            //查找规则
-            var crQuery = new AV.Query('CreditRule');
-            crQuery.equalTo('type', type);
-            return crQuery.first()
-
-        }).then(function(object){
+        //查找规则
+        var crQuery = new AV.Query('CreditRule');
+        crQuery.equalTo('type', type);
+        crQuery.first().then(function(object){
 
              creditRuleId = AV.Object.createWithoutData("CreditRule", object.id);
              _credits = object.get('credits')-price;
