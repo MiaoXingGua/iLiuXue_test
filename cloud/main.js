@@ -97,8 +97,8 @@ AV.Cloud.afterSave('Post', function(request, response){
     var user = request.user;
     var thread = post.get('thread');
 
-    console.log('thread');
-    console.dir(thread);
+//    console.log('thread');
+//    console.dir(thread);
 
     //回复
     thread.relation('posts').add(post);
@@ -116,7 +116,7 @@ AV.Cloud.afterSave('Post', function(request, response){
 
         var userCount = user.get('userCount');
 
-        console.dir(userCount);
+//        console.dir(userCount);
 
         userCount.increment('numberOfPosts');
 
@@ -133,12 +133,13 @@ AV.Cloud.afterSave('Post', function(request, response){
 
         }).then(function(object){
 
+            console.log('调整积分');
             console.dir(object);
 
             var c = object.get('credits');
             var e = object.get('experience');
 
-            console.log('调整积分');
+
             console.log(c);
             console.log(e);
             console.log(c+e);
