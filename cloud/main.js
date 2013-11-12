@@ -140,22 +140,22 @@ AV.Cloud.afterSave('Post', function(request, response){
             var e = object.get('experience');
 
 
-            console.log(c);
-            console.log(e);
-            console.log(c+e);
-//
-//            //调整积分
-//            user.increment('credits',c);
-//            //调整经验值
-//            user.increment('experience',e);
-//            return user.save();
+            console.log('积分1 %d',c);
+            console.log('经验1 %d',e);
+//            console.log(c+e);
 
-//        }).then(function(user){
+            //调整积分
+            user.increment('credits',c);
+            //调整经验值
+            user.increment('experience',e);
+            return user.save();
+
+        }).then(function(user,c,e){
 
 //            //增加积分变更记录
-//            console.log('增加积分变更记录');
-//            console.log(c);
-//            console.log(e);
+            console.log('增加积分变更记录');
+            console.log('积分2 %d',c);
+            console.log('经验2 %d',e);
 //            console.log(c+e);
 //
 //            var creditRuleLog = new CreditRuleLog();
