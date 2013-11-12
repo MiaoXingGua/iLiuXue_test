@@ -104,7 +104,7 @@ AV.Cloud.afterSave('Post', function(request, response){
 //    console.log('thread');
 //    console.dir(thread);
 
-
+    var creditRuleId;
 
     //回复
     thread.relation('posts').add(post);
@@ -139,15 +139,17 @@ AV.Cloud.afterSave('Post', function(request, response){
 
         }).then(function(object){
 
-            console.log('调整积分');
-            console.dir(object);
+//            console.log('调整积分');
+//            console.dir(object);
+
+            creditRuleId =AV.Object.createWithoutData("CreditRule", object.id);
 
             _credits = object.get('credits');
             _experience = object.get('experience');
 
 
-            console.log('积分1 %d',_credits);
-            console.log('经验1 %d',_experience);
+//            console.log('积分1 %d',_credits);
+//            console.log('经验1 %d',_experience);
 //            console.log(c+e);
 
             //调整积分
@@ -169,8 +171,9 @@ AV.Cloud.afterSave('Post', function(request, response){
 
 //            console.dir(creditRuleLog);
             var userId = AV.Object.createWithoutData("_User", user.id);
+
             creditRuleLog.set('user',userId);
-            creditRuleLog.set('type',type);
+            creditRuleLog.set('type',creditRuleId);
             creditRuleLog.set('accumulativeCredit',_credits);
             creditRuleLog.set('accumulativeExperience',_experience);
             return creditRuleLog.save();
