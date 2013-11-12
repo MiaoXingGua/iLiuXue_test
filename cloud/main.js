@@ -160,6 +160,7 @@ AV.Cloud.afterSave('Post', function(request, response){
 
 //            //增加积分变更记录
             console.log('增加积分变更记录');
+
             console.log('积分2 %d',_credits);
             console.log('经验2 %d',_experience);
 //            console.log(c+e);
@@ -168,7 +169,7 @@ AV.Cloud.afterSave('Post', function(request, response){
 
 //            console.dir(creditRuleLog);
 
-            creditRuleLog.set('user',user);
+            creditRuleLog.set('user',user.id);
             creditRuleLog.set('type',type);
             creditRuleLog.set('accumulativeCredit',_credits);
             creditRuleLog.set('accumulativeExperience',_experience);
