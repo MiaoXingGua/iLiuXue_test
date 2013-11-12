@@ -39,43 +39,57 @@ AV.Cloud.beforeSave('Thread', function(request, response) {
 AV.Cloud.afterSave('Thread', function(request) {
 
     var thread = request.object;
-    var updatedAt = Thread.get('updatedAt');
-
-    var price = Thread.get('price');
-
-    thread.set('lastPostAt',updatedAt);
-
-    //提交问题
     var type = 11;
     var user = request.user;
 
-    //查找规则
-    var crQuery = new AV.Query('CreditRule');
-    crQuery.equalTo('type', type);
-    crQuery.first().then(function(object){
+    var price = thread.get('price');
 
-        _credits = object.get('credits')-(price+5);
-        _experience = object.get('experience');
+    var creditRuleId;
 
-        //调整积分
-        user.increment('credits',_credits);
-        //调整经验值
-        user.increment('experience',_experience);
+    //    var updatedAt = thread.get('updatedAt');
+    //最后回复时间=发帖时间
+    thread.set('lastPostAt',thread.get('updatedAt'));
+    thread.save().then(function(thread){
 
-        return user.save();
+            //查找规则
+            var crQuery = new AV.Query('CreditRule');
+            crQuery.equalTo('type', type);
+            return crQuery.first()
+
+        }).then(function(object){
+
+             creditRuleId = AV.Object.createWithoutData("CreditRule", object.id);
+             _credits = object.get('credits')-(price+5);
+             _experience = object.get('experience');
+
+
+            //user的发帖数+1
+            var userCount = user.get('userCount');
+            userCount.increment('numberOfThreads');
+
+            return userCount.save();
+
+        }).then(function(){
+
+            //调整积分
+            user.increment('credits',_credits);
+            //调整经验值
+            user.increment('experience',_experience);
+
+            return user.save();
 
         }).then(function(user){
 
             //增加积分变更记录
             var creditRuleLog = new CreditRuleLog();
-            creditRuleLog.set('user',user);
-            creditRuleLog.set('type',type);
+            var userId = AV.Object.createWithoutData("_User", user.id);
+            creditRuleLog.set('user',userId);
+            creditRuleLog.set('type',creditRuleId);
             creditRuleLog.set('accumulativeCredit',_credits);
             creditRuleLog.set('accumulativeExperience',_experience);
             return creditRuleLog.save();
 
         }).then(function(obj){
-
 
             console.log('发帖成功');
             console.dir(obj);
