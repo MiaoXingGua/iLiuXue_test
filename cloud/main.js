@@ -65,7 +65,7 @@ AV.Cloud.afterSave('Thread', function(request) {
             //user的发帖数+1
             console.log('user的发帖数+1');
             var userCount = user.get('userCount');
-            userCount.increment('numberOfThreads');
+            userCount.increment('numberOfThreads',1);
             console.dir(userCount);
 
             return userCount.save();
