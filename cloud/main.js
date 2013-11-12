@@ -93,16 +93,11 @@ AV.Cloud.afterSave('Thread', function(request) {
 AV.Cloud.afterSave('Post', function(request, response){
 
     var post = request.object;
-//    if (post.get('createdAt') != post.get('updateAt'))
-//        return;
 
     var type = 21;
 
     var user = request.user;
     var thread = post.get('thread');
-
-//    console.log('thread');
-//    console.dir(thread);
 
     var creditRuleId;
 
@@ -139,18 +134,10 @@ AV.Cloud.afterSave('Post', function(request, response){
 
         }).then(function(object){
 
-//            console.log('调整积分');
-//            console.dir(object);
-
             creditRuleId =AV.Object.createWithoutData("CreditRule", object.id);
 
             _credits = object.get('credits');
             _experience = object.get('experience');
-
-
-//            console.log('积分1 %d',_credits);
-//            console.log('经验1 %d',_experience);
-//            console.log(c+e);
 
             //调整积分
             user.increment('credits',_credits);
@@ -194,37 +181,37 @@ AV.Cloud.afterSave('Post', function(request, response){
 //发评论后
 AV.Cloud.afterSave('Comment', function(request, response){
 
-
     var comment = request.object;
-    if (comment.get('createdAt') != comment.get('updateAt'))
-        return;
 
-    var post = post.get('post');
+    var type = 22;
+
     var user = request.user;
+    var post = post.get('post');
 
-    post.increment('numberOfPosts');
+    var creditRuleId;
 
     //评论
     post.relation('comments').add(comment);
     //评论数
     post.increment('numberOfComments');
     //最后评论人
-    post.set('lastCommenter',user);
+    post.set('lastCommenter',user);   //这里就不用WithoutData
     //最后评论时间
     post.set('lastCommentAt',comment.get('createdAt'));
 
-    post.save().then(function(thread){
+    post.save().then(function(post){
 
         //user的评论数+1
-        user.get('userCount').increment('numberOfComments');
+        var userCount = user.get('userCount');
+        userCount.increment('numberOfComments');
 
-        return user.save();
+        return userCount.save();    //user.save() 不会save到userCount
 
 //        }).then(function(user){
 
-    }).then(function(user){
+        }).then(function(){
 
-            var type = 22;
+
             //查找规则
             var crQuery = new AV.Query('CreditRule');
             crQuery.equalTo('type', type);
@@ -232,27 +219,36 @@ AV.Cloud.afterSave('Comment', function(request, response){
 
         }).then(function(object){
 
-            var c = object.get('credits');
-            var e = object.get('experience');
+            creditRuleId =AV.Object.createWithoutData("CreditRule", object.id);
+            _credits = object.get('credits');
+            _experience = object.get('experience');
 
             //调整积分
-            user.increment('credits',c);
+            user.increment('credits',_credits);
             //调整经验值
-            user.increment('experience',e);
+            user.increment('experience',_experience);
             return user.save();
 
-        }).then(function(user,c,e){
+        }).then(function(user){
 
             //增加积分变更记录
             var creditRuleLog = new CreditRuleLog();
-            creditRuleLog.set('user',user);
-            creditRuleLog.set('type',type);
-            creditRuleLog.set('accumulativeCredit',c);
-            creditRuleLog.set('accumulativeExperience',e);
+            var userId = AV.Object.createWithoutData("_User", user.id);
+            creditRuleLog.set('user',userId);
+            creditRuleLog.set('type',creditRuleId);
+            creditRuleLog.set('accumulativeCredit',_credits);
+            creditRuleLog.set('accumulativeExperience',_experience);
             return creditRuleLog.save();
+
+        }).then(function(creditRuleLog) {
+
+            console.log('发评论成功');
+            console.dir(creditRuleLog);
 
         },function(error){
 
+            console.log('发评论失败');
+            console.dir(error);
 
         });
 });
