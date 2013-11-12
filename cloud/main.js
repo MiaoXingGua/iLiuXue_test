@@ -147,7 +147,7 @@ AV.Cloud.afterSave('Post', function(request, response){
 
 
             console.log('积分1 %d',_credits);
-            console.log('经验1 %d',e);
+            console.log('经验1 %d',_experience);
 //            console.log(c+e);
 
             //调整积分
