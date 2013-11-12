@@ -59,7 +59,7 @@ AV.Cloud.afterSave('Thread', function(request) {
         }).then(function(object){
 
              creditRuleId = AV.Object.createWithoutData("CreditRule", object.id);
-             _credits = object.get('credits')-(price+5);
+             _credits = object.get('credits')-price;
              _experience = object.get('experience');
 
 
