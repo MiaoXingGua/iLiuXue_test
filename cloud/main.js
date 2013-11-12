@@ -70,7 +70,7 @@ AV.Cloud.afterSave('Thread', function(request) {
 
             return userCount.save();
 
-        }).then(function(){
+        }).then(function(userCount){
 
             //调整积分
             user.increment('credits',_credits);
@@ -79,7 +79,12 @@ AV.Cloud.afterSave('Thread', function(request) {
 
             return user.save();
 
-        }).then(function(user){
+        },function(error){
+
+                console.log('加积分失败');
+                console.dir(error);
+
+            }).then(function(user){
 
             //增加积分变更记录
             var creditRuleLog = new CreditRuleLog();
