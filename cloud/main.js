@@ -157,16 +157,16 @@ AV.Cloud.afterSave('Post', function(request, response){
             console.log('积分2 %d',c);
             console.log('经验2 %d',e);
 //            console.log(c+e);
-//
-//            var creditRuleLog = new CreditRuleLog();
-//
-//            console.dir(creditRuleLog);
-//
-//            creditRuleLog.set('user',user);
-//            creditRuleLog.set('type',type);
-//            creditRuleLog.set('accumulativeCredit',c);
-//            creditRuleLog.set('accumulativeExperience',e);
-//            return creditRuleLog.save();
+
+            var creditRuleLog = new CreditRuleLog();
+
+            console.dir(creditRuleLog);
+
+            creditRuleLog.set('user',user);
+            creditRuleLog.set('type',type);
+            creditRuleLog.set('accumulativeCredit',c);
+            creditRuleLog.set('accumulativeExperience',e);
+            return creditRuleLog.save();
 
         }).then(function(obj) {
 
