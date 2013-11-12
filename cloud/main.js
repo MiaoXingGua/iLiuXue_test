@@ -166,7 +166,7 @@ AV.Cloud.afterSave('Post', function(request, response){
 
             var creditRuleLog = new CreditRuleLog();
 
-            console.dir(creditRuleLog);
+//            console.dir(creditRuleLog);
 
             creditRuleLog.set('user',user);
             creditRuleLog.set('type',type);
@@ -174,10 +174,10 @@ AV.Cloud.afterSave('Post', function(request, response){
             creditRuleLog.set('accumulativeExperience',_experience);
             return creditRuleLog.save();
 
-        }).then(function(obj) {
+        }).then(function(creditRuleLog) {
 
             console.log('发回复成功');
-            console.dir(obj);
+            console.dir(creditRuleLog);
 
         },function(error){
 
