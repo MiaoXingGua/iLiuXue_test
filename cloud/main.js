@@ -168,8 +168,8 @@ AV.Cloud.afterSave('Post', function(request, response){
             var creditRuleLog = new CreditRuleLog();
 
 //            console.dir(creditRuleLog);
-
-            creditRuleLog.set('user',user.id);
+            var userId = AV.Object.createWithoutData("_User", user.id);
+            creditRuleLog.set('user',userId);
             creditRuleLog.set('type',type);
             creditRuleLog.set('accumulativeCredit',_credits);
             creditRuleLog.set('accumulativeExperience',_experience);
