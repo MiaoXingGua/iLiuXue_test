@@ -140,18 +140,19 @@ AV.Cloud.afterSave('Post', function(request, response){
     thread.save().then(function(thread){
 
         //user的回复数+1
+        console.log('user的回复数+1');
+
 //        console.log('userCount');
 
         var userCount = user.get('userCount');
 
-//        console.dir(userCount);
+        console.dir(userCount);
 
         userCount.increment('numberOfPosts');
 
         return userCount.save();
 
          }).then(function(){
-
 
             //查找规则
             console.log('查找规则');
