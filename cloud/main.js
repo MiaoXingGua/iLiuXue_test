@@ -213,7 +213,7 @@ AV.Cloud.afterSave('Comment', function(request, response){
     var type = 22;
 
     var user = request.user;
-    var post = post.get('post');
+    var post = comment.get('post');
 
     var creditRuleId;
 
