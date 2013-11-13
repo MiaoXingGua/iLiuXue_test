@@ -20,12 +20,13 @@ AV.Cloud.setInterval('refreash_thread_count', 30, function(){
         for (var i = 0; i < users.length; i++) {
 
             var userCount =users[i].get('userCount');
+            console.dir(userCount);
 
             var threadQuery = new AV.Query(Thread);
             threadQuery.equalTo("postUser", users[i]);
             threadQuery.count().then(function(count){
 
-//                console.log(threads.length)
+                console.log(count);
                 userCount.set('numberOfThreads',count);
                 return userCount.save();
 
