@@ -20,7 +20,7 @@ AV.Cloud.setInterval("refreash_thread_count", 30, function(){
         for (var i = 0; i < users.length; i++) {
 
             var threadQuery = new AV.Query(Thread);
-            threadQuery.equalTo("postUser", users);
+            threadQuery.equalTo("postUser", users[i]);
             threadQuery.find().then(function(threads){
 
                 console.log("成功2！！！");
