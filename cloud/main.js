@@ -281,3 +281,28 @@ AV.Cloud.afterSave('Comment', function(request, response){
 
         });
 });
+
+//删除回复
+AV.Cloud.afterDelete("Post", function(request) {
+
+    var postUser = request.object.get('postUser');
+    console.dir(postUser);
+
+    var userCount = postUser.get('userCount');
+    console.dir(userCount);
+
+    userCount.increment('numberOfPosts',-1);
+    userCount.save(null, {
+        success: function(userCount) {
+
+            console.log('删除回复成功');
+            console.dir(creditRuleLog);
+        },
+        error: function(userCount, error) {
+
+            console.log('删除回复失败');
+            console.dir(error);
+        }
+    });
+
+});
