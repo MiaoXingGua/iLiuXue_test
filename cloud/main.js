@@ -53,29 +53,22 @@ AV.Cloud.afterSave('Thread', function(request) {
 //    thread.set('lastPostAt',updatedAt);
 //    thread.save().then(function(thread){
 
-        //查找规则
-        var crQuery = new AV.Query('CreditRule');
-        crQuery.equalTo('type', type);
-        crQuery.first().then(function(object){
+    //user的发帖数+1
+    console.log('user的发帖数+1');
+    var userCount = user.get('userCount');
+    userCount.increment('numberOfThreads',1);
+    userCount.save().then(function(){
 
-             creditRuleId = AV.Object.createWithoutData("CreditRule", object.id);
-             _credits = object.get('credits')-price;
-             _experience = object.get('experience');
+            //查找规则
+            var crQuery = new AV.Query('CreditRule');
+            crQuery.equalTo('type', type);
+            return crQuery.first();
 
-            //user的发帖数+1
-            console.log('user的发帖数+1');
-            var userCount = user.get('userCount');
-            userCount.increment('numberOfThreads',1);
-            console.dir(userCount);
+        }).then(function(object){
 
-            return userCount.save();
-
-        },function(error){
-
-            console.log('发帖数+1失败');
-            console.dir(error);
-
-        }).then(function(userCount){
+            creditRuleId = AV.Object.createWithoutData("CreditRule", object.id);
+            _credits = object.get('credits')-price;
+            _experience = object.get('experience');
 
             //调整积分
             user.increment('credits',_credits);
@@ -84,12 +77,7 @@ AV.Cloud.afterSave('Thread', function(request) {
 
             return user.save();
 
-        },function(error){
-
-                console.log('调整积分失败');
-                console.dir(error);
-
-            }).then(function(user){
+        }).then(function(user){
 
             //增加积分变更记录
             var creditRuleLog = new CreditRuleLog();
