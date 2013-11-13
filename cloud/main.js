@@ -6,6 +6,11 @@ var CreditRuleLog = AV.Object.extend('CreditRuleLog');
 var _credits = 0;
 var _experience = 0;
 
+
+AV.Cloud.setInterval("refreash_thread_count", 30, function(){
+    console.log("Log in timer.");
+});
+
 //发帖前
 AV.Cloud.beforeSave('Thread', function(request, response) {
 
@@ -312,11 +317,14 @@ AV.Cloud.afterDelete("Thread", function(request) {
 //删除回复
 AV.Cloud.afterDelete("Post", function(request) {
 
-    var postUser = request.object.get('postUser');
-    console.dir(postUser);
+    var post = request.object;
+    var postUser = post.get('postUser');
+    var comments = post.get('comments');
+
+//    console.dir(postUser);
 
     var userCount = postUser.get('userCount');
-    console.dir(userCount);
+//    console.dir(userCount);
 
     userCount.increment('numberOfPosts',-1);
     userCount.save(null, {
