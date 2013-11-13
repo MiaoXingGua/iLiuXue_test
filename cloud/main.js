@@ -1,5 +1,7 @@
 
 var Thread = AV.Object.extend('Thread');
+var Post = AV.Object.extend('Post');
+var Commnet = AV.Object.extend('Commnet');
 var CreditRuleLog = AV.Object.extend('CreditRuleLog');
 var User = AV.Object.extend('_User');
 
@@ -10,14 +12,30 @@ var _experience = 0;
 AV.Cloud.setInterval("refreash_thread_count", 30, function(){
 
     var userQuery = new AV.Query(User);
-    userQuery.find().then(function(objects){
+    userQuery.find().then(function(users){
 
-        console.log("成功！！！");
-        console.log(objects.length);
+        console.log("成功1！！！");
+//        console.log(users.length);
+
+        for (var i = 0; i < users.length; i++) {
+
+            var threadQuery = new AV.Query(Thread);
+            threadQuery.equalTo("postUser", users);
+            threadQuery.find().then(function(threads){
+
+                console.log("成功2！！！");
+                console.log(threads.length)
+
+            },function(error){
+
+                console.log("失败2！！！");
+                console.dir(error);
+            });
+        }
 
     },function(error){
 
-        console.log("失败！！！");
+        console.log("失败1！！！");
         console.dir(error);
     });
 
