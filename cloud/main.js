@@ -20,7 +20,7 @@ AV.Cloud.setInterval('refreash_thread_count', 30, function(){
         for (var i = 0; i < users.length; i++) {
 
             var userCount =users[i].get('userCount');
-            console.dir(userCount);
+//            console.dir(userCount);
 
             var threadQuery = new AV.Query(Thread);
             threadQuery.equalTo("postUser", users[i]);
@@ -33,7 +33,7 @@ AV.Cloud.setInterval('refreash_thread_count', 30, function(){
 
             }).then(function(userCount){
 
-                console.log("成功2！！！");
+//                console.log("成功2！！！");
 //                    console.log(userCount);
 
             },function(error){
