@@ -9,7 +9,7 @@ var _credits = 0;
 var _experience = 0;
 
 
-AV.Cloud.setInterval("refreash_thread_count", 30, function(){
+AV.Cloud.setInterval('refreash_thread_count', 30, function(){
 
     var userQuery = new AV.Query(User);
     userQuery.find().then(function(users){
@@ -19,17 +19,26 @@ AV.Cloud.setInterval("refreash_thread_count", 30, function(){
 
         for (var i = 0; i < users.length; i++) {
 
+            var userCount =users[i].get('userCount');
+
             var threadQuery = new AV.Query(Thread);
             threadQuery.equalTo("postUser", users[i]);
-            threadQuery.find().then(function(threads){
+            threadQuery.count().then(function(count){
+
+//                console.log(threads.length)
+                userCount.set('numberOfThreads',count);
+                return userCount.save();
+
+            }).then(function(userCount){
 
                 console.log("成功2！！！");
-                console.log(threads.length)
+//                    console.log(userCount);
 
             },function(error){
 
                 console.log("失败2！！！");
                 console.dir(error);
+
             });
         }
 
