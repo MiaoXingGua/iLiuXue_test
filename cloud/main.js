@@ -230,6 +230,9 @@ AV.Cloud.afterSave('Comment', function(request, response){
 
         //user的评论数+1
         var userCount = user.get('userCount');
+
+        console.dir(userCount);
+
         userCount.increment('numberOfComments');
 
         return userCount.save();    //user.save() 不会save到userCount
@@ -237,7 +240,6 @@ AV.Cloud.afterSave('Comment', function(request, response){
 //        }).then(function(user){
 
         }).then(function(){
-
 
             //查找规则
             var crQuery = new AV.Query('CreditRule');
