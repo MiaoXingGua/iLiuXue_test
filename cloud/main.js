@@ -1,14 +1,26 @@
 
 var Thread = AV.Object.extend('Thread');
 var CreditRuleLog = AV.Object.extend('CreditRuleLog');
-
+var User = AV.Object.extend('_User');
 
 var _credits = 0;
 var _experience = 0;
 
 
 AV.Cloud.setInterval("refreash_thread_count", 30, function(){
-    console.log("Log in timer.");
+
+    var userQuery = new AV.Query(User);
+    userQuery.find().then(function(objects){
+
+        console.log("成功！！！");
+        console.log(objects.length);
+
+    },function(error){
+
+        console.log("失败！！！");
+        console.dir(error);
+    });
+
 });
 
 //发帖前
