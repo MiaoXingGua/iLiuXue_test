@@ -9,7 +9,7 @@ var _credits = 0;
 var _experience = 0;
 
 
-AV.Cloud.setInterval('refreash_thread_count', 30, function(){
+AV.Cloud.setInterval('refreash_thread_count', 3000, function(){
 
     var userQuery = new AV.Query(User);
     userQuery.find().then(function(users){
