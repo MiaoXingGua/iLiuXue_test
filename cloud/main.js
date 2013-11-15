@@ -507,15 +507,11 @@ AV.Cloud.afterUpdate("UserFavicon", function(request) {
     userQ.include('userFavicon');
     userQ.first().then(function(user){
 
-        console.dir(user);
+//        console.dir(user);
         var userFavicon = user.get('userFavicon');
-        console.dir(userFavicon);
+//        console.dir(userFavicon);
         var userFTQ = userFavicon.relation('threads');
-        return userFTQ.count();
-
-        },function(error){
-
-        console.log("收藏失败123456！");
+        return userFTQ.query().count();
 
         }).then(function(count){
 
