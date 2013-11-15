@@ -311,15 +311,8 @@ var checkThreadNumberOfPosts = function(post){
     postQ.equalTo("thread", threadId);
     postQ.count().then(function(count){
 
-        //回复
-        thread.relation('posts').add(post);
         //回复数
         thread.set('numberOfPosts',count);
-        //最后回复人
-        thread.set('lastPoster',user);
-        //最后回复时间
-        thread.set('lastPostAt',post.get('createdAt'));
-
         return thread.save();
 
         }).then(function(thread) {
@@ -347,6 +340,14 @@ AV.Cloud.afterSave('Post', function(request, response){
     //检查帖子回复
     var post = request.object;
     checkThreadNumberOfPosts(post);
+
+//    var thread = post.get('thread');
+//    //回复
+//    thread.relation('posts').add(post);
+//    //最后回复人
+//    thread.set('lastPoster',user);
+//    //最后回复时间
+//        thread.set('lastPostAt',post.get('createdAt'));
 
     //查找规则
     console.log('查找规则');
