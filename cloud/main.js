@@ -426,7 +426,7 @@ AV.Cloud.afterDelete("Post", function(request) {
         });
 });
 
-//发评论后
+//11发评论后
 AV.Cloud.afterSave('Comment', function(request, response){
 
     var comment = request.object;
