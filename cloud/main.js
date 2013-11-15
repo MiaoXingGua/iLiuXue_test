@@ -291,6 +291,37 @@ AV.Cloud.afterSave('Post', function(request, response){
 
     var creditRuleId;
 
+    var userId = AV.Object.createWithoutData("_User", user.id);
+
+    var postQ = new AV.Query(Post);
+    postQ.equalTo("postUser", userId);
+    postQ.count().then(function(count){
+
+        //user的回复数+1
+        console.log('user的回复数+1');
+
+//        console.log('userCount');
+
+        var userCount = user.get('userCount');
+
+//        console.dir(userCount);
+
+        userCount.set('numberOfPosts',count);
+
+//        console.dir(userCount);
+
+        return userCount.save();
+
+         }).then(function(userCount) {
+
+            console.log('用户回复数: '+userCount.get('numberOfPosts'));
+
+        },function(error){
+
+            console.log('更改用户回复数失败');
+
+    });
+
     var threadId = AV.Object.createWithoutData("Thread", thread.id);
 
     var postQ = new AV.Query(Post);
@@ -307,23 +338,6 @@ AV.Cloud.afterSave('Post', function(request, response){
         thread.set('lastPostAt',post.get('createdAt'));
 
         return thread.save();
-
-    }).then(function(thread){
-
-        //user的回复数+1
-        console.log('user的回复数+1');
-
-//        console.log('userCount');
-
-        var userCount = user.get('userCount');
-
-        console.dir(userCount);
-
-        userCount.increment('numberOfPosts');
-
-        console.dir(userCount);
-
-        return userCount.save();
 
          }).then(function(){
 
@@ -369,7 +383,7 @@ AV.Cloud.afterSave('Post', function(request, response){
         }).then(function(creditRuleLog) {
 
             console.log('发回复成功');
-            console.dir(creditRuleLog);
+//            console.dir(creditRuleLog);
 
         },function(error){
 
@@ -377,6 +391,32 @@ AV.Cloud.afterSave('Post', function(request, response){
             console.dir(error);
 
         });
+});
+
+//删除回复
+AV.Cloud.afterDelete("Post", function(request) {
+
+    var post = request.object;
+    var user = request.user;
+    var thread = post.get('thread');
+
+    var threadId = AV.Object.createWithoutData("Thread", thread.id);
+
+    var postQ = new AV.Query(Post);
+    postQ.equalTo("thread", threadId);
+    postQ.count().then(function(count){
+
+        //回复
+        thread.relation('posts').add(post);
+        //回复数
+        thread.set('numberOfPosts',count);
+        //最后回复人
+        thread.set('lastPoster',user);
+        //最后回复时间
+        thread.set('lastPostAt',post.get('createdAt'));
+
+        return thread.save();
+    });
 });
 
 //发评论后
@@ -485,32 +525,7 @@ AV.Cloud.afterDelete("Thread", function(request) {
     });
 });
 
-//删除回复
-AV.Cloud.afterDelete("Post", function(request) {
 
-    var post = request.object;
-    var postUser = post.get('postUser');
-    var comments = post.get('comments');
-
-//    console.dir(postUser);
-
-    var userCount = postUser.get('userCount');
-//    console.dir(userCount);
-
-    userCount.increment('numberOfPosts',-1);
-    userCount.save(null, {
-        success: function(userCount) {
-
-            console.log('删除回复成功');
-            console.dir(creditRuleLog);
-        },
-        error: function(userCount, error) {
-
-            console.log('删除回复失败');
-            console.dir(error);
-        }
-    });
-});
 
 //删除评论
 AV.Cloud.afterDelete("Comment", function(request) {
