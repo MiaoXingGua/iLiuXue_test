@@ -269,7 +269,7 @@ AV.Cloud.afterSave('Post', function(request, response){
         //回复
         thread.relation('posts').add(post);
         //回复数
-        thread.set('numberOfPosts',count+1);
+        thread.set('numberOfPosts',count);
         //最后回复人
         thread.set('lastPoster',user);
         //最后回复时间
