@@ -509,7 +509,7 @@ AV.Cloud.afterUpdate("UserFavicon", function(request) {
 
 //        console.dir(user);
         var userFavicon = user.get('userFavicon');
-//        console.dir(userFavicon);
+        console.dir(userFavicon);
         var userFR = userFavicon.relation('threads');
         return userFR.query().count();
 
