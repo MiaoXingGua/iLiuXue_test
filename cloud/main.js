@@ -282,15 +282,10 @@ AV.Cloud.afterSave('Post', function(request){
 //发回复后
 AV.Cloud.afterSave('Post', function(request, response){
 
-    var post = request.object;
-
     var type = 21;
-
-    var user = request.user;
-    var thread = post.get('thread');
-
     var creditRuleId;
 
+    var user = request.user;
     var userId = AV.Object.createWithoutData("_User", user.id);
 
     var postQ = new AV.Query(Post);
@@ -322,6 +317,8 @@ AV.Cloud.afterSave('Post', function(request, response){
 
     });
 
+    var post = request.object;
+    var thread = post.get('thread');
     var threadId = AV.Object.createWithoutData("Thread", thread.id);
 
     var postQ = new AV.Query(Post);
@@ -396,27 +393,37 @@ AV.Cloud.afterSave('Post', function(request, response){
 //删除回复
 AV.Cloud.afterDelete("Post", function(request) {
 
-    var post = request.object;
     var user = request.user;
-    var thread = post.get('thread');
-
-    var threadId = AV.Object.createWithoutData("Thread", thread.id);
+    var userId = AV.Object.createWithoutData("_User", user.id);
 
     var postQ = new AV.Query(Post);
-    postQ.equalTo("thread", threadId);
+    postQ.equalTo("postUser", userId);
     postQ.count().then(function(count){
 
-        //回复
-        thread.relation('posts').add(post);
-        //回复数
-        thread.set('numberOfPosts',count);
-        //最后回复人
-        thread.set('lastPoster',user);
-        //最后回复时间
-        thread.set('lastPostAt',post.get('createdAt'));
+        //user的回复数+1
+        console.log('user的回复数+1');
 
-        return thread.save();
-    });
+//        console.log('userCount');
+
+        var userCount = user.get('userCount');
+
+//        console.dir(userCount);
+
+        userCount.set('numberOfPosts',count);
+
+//        console.dir(userCount);
+
+        return userCount.save();
+
+    }).then(function(userCount) {
+
+            console.log('用户回复数: '+userCount.get('numberOfPosts'));
+
+        },function(error){
+
+            console.log('更改用户回复数失败');
+
+        });
 });
 
 //发评论后
