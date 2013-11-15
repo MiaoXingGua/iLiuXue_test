@@ -261,9 +261,9 @@ AV.Cloud.afterSave('Post', function(request, response){
     var thread = post.get('thread');
 
     var creditRuleId;
-
+    var threadId = AV.Object.createWithoutData("Thread", thread.id);
     var postQ = new AV.Query(Post);
-    postQ.equalTo("thread", thread);
+    postQ.equalTo("thread", threadId);
     postQ.count().then(function(count){
 
         //回复
