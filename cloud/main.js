@@ -37,7 +37,7 @@ AV.Cloud.setInterval('refreash_thread_count', 30, function(){
                     console.dir(user);
                     console.dir(userCount);
 
-                    userCount.set('numberOfThreads',count);
+                    userCount.set('numberOfThreads',threads.length);
 
                     return userCount.save();
                 }
