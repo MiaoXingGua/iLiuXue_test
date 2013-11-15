@@ -57,8 +57,8 @@ AV.Cloud.setInterval('refreash_thread_count', 30, function(){
 //
             }).then(function(userCount){
 //
-////                console.log("成功2！！！");
-////                    console.log(userCount);
+                console.log("成功2！！！");
+                console.log(userCount);
 //
             },function(error){
 
