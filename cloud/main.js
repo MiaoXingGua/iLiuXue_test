@@ -94,7 +94,7 @@ AV.Cloud.setInterval('refreash_thread_count', 30, function(){
 //                    console.dir(user);
 //                    console.dir(userCount);
 
-                    userCount.set('numberOfComments',posts.length);
+                    userCount.set('numberOfComments',comments.length);
 
                     return userCount.save();
                 }
