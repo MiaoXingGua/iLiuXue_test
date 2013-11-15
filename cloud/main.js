@@ -1,7 +1,7 @@
 
 var Thread = AV.Object.extend('Thread');
 var Post = AV.Object.extend('Post');
-var Commnet = AV.Object.extend('Commnet');
+var Comment = AV.Object.extend('Comment');
 var UserFavicon = AV.Object.extend('UserFavicon');
 var CreditRuleLog = AV.Object.extend('CreditRuleLog');
 var User = AV.Object.extend('_User');
