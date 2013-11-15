@@ -248,6 +248,8 @@ AV.Cloud.afterSave('Thread', function(request) {
 });
 
 
+//
+
 //发回复后
 AV.Cloud.afterSave('Post', function(request, response){
 
@@ -260,16 +262,21 @@ AV.Cloud.afterSave('Post', function(request, response){
 
     var creditRuleId;
 
-    //回复
-    thread.relation('posts').add(post);
-    //回复数
-    thread.increment('numberOfPosts');
-    //最后回复人
-    thread.set('lastPoster',user);
-    //最后回复时间
-    thread.set('lastPostAt',post.get('createdAt'));
+    var postQ = thread.relation('posts');
+    postQ.count().then(function(count){
 
-    thread.save().then(function(thread){
+        //回复
+        thread.relation('posts').add(post);
+        //回复数
+        thread.set('numberOfPosts',count+1);
+        //最后回复人
+        thread.set('lastPoster',user);
+        //最后回复时间
+        thread.set('lastPostAt',post.get('createdAt'));
+
+        return thread.save();
+
+    }).then(function(thread){
 
         //user的回复数+1
         console.log('user的回复数+1');
