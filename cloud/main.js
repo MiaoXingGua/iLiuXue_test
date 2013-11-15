@@ -31,9 +31,8 @@ AV.Cloud.setInterval('refreash_thread_count', 30, function(){
                 if (firThread)
                 {
                     var user = firThread.get('postUser');
-                    console.log(user.get('username'));
+                    console.log(user.id);
                 }
-
 
 //                console.log(user.get('username'));
 
