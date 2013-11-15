@@ -517,11 +517,12 @@ AV.Cloud.afterUpdate("UserFavicon", function(request) {
 
             console.log(objects.length);
         var userCount = user.get('userCount');
+            console.dir(userCount);
         userCount.set('numberOfFavicon',objects.length);
         return userCount.save();
 
-        }).then(function() {
-
+        }).then(function(userCount) {
+            console.dir(userCount);
             console.log("收藏成功！");
 
         },function(error){
