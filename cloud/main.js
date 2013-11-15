@@ -241,9 +241,6 @@ AV.Cloud.afterSave('Thread', function(request) {
         });
 });
 
-
-//
-
 //发回复后
 AV.Cloud.afterSave('Post', function(request, response){
 
@@ -498,5 +495,35 @@ AV.Cloud.afterDelete("Comment", function(request) {
             console.log('删除评论失败');
             console.dir(error);
         }
+    });
+});
+
+//收藏主题or取消收藏主题
+AV.Cloud.afterUpdate("UserFavicon", function(request) {
+    var user = request.user;
+    var userQ = new AV.Query(User);
+    userQ.equalTo("objectId", user.id);
+    userQ.include('userCount');
+    userQ.include('userFavicon');
+    userQ.first().then(function(user){
+
+        var userFavicon = user.get('userFavicon');
+        var userFTQ = userFavicon.relation('threads');
+        return userFTQ.count();
+
+        }).then(function(count){
+
+        var userCount = user.get('userCount');
+        userCount.set('numberOfFavicon',count);
+        return userCount.save();
+
+        }).then(function() {
+
+           consolo.log("收藏成功！");
+
+        },function(error){
+
+           consolo.log("收藏失败！");
+
     });
 });
