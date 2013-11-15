@@ -241,6 +241,44 @@ AV.Cloud.afterSave('Thread', function(request) {
         });
 });
 
+//更该帖子
+AV.Cloud.afterSave('Post', function(request){
+
+    var post = request.object;
+
+    var postState = post.get('state');
+    //已完成的帖子
+    if (postState == 1)
+    {
+        var user = post.get('postUser');
+        var userId = AV.Object.createWithoutData("_User", user.id);
+
+        var postQ = new AV.Query(User);
+        postQ.equalTo('postUser', userId);
+        postQ.equalTo('state', 1);
+        postQ.find().then(function(posts){
+
+            console.log('啧啧啧啧啧正则啧啧啧啧啧');
+            var userCount = user.get('userCount');
+            console.dir(userCount);
+            userCount.set('numberOfBestPost',objects.length);
+            return userCount.save();
+
+        }).then(function(userCount){
+
+
+                console.log("最佳答案成功！");
+
+        },function(error){
+
+                console.log("最佳答案失败！");
+
+        });
+    }
+
+});
+
+
 //发回复后
 AV.Cloud.afterSave('Post', function(request, response){
 
@@ -507,7 +545,45 @@ AV.Cloud.afterUpdate("UserFavicon", function(request) {
     userQ.include('userFavicon');
     userQ.first().then(function(user){
 
-//        console.dir(user);
+        console.log(user.id);
+
+        var userFavicon = user.get('userFavicon');
+//        console.dir(userFavicon);
+        var userTFR = userFavicon.relation('threads');
+//        console.dir(userFR);
+        return userTFR.query().find();
+//        return userFR.query().count();
+
+        }).then(function(objects){
+            //收藏主题or取消收藏主题
+//            console.log(objects.length);
+            var userCount = user.get('userCount');
+//            console.dir(userCount);
+            userCount.set('numberOfFavicon',objects.length);
+        return userCount.save();
+
+        }).then(function(userCount) {
+            console.dir(userCount);
+            console.log("收藏成功！");
+        //赞回复or取消赞回复
+
+        },function(error){
+
+            console.log("收藏失败！");
+
+    });
+});
+
+//赞回复or取消赞回复
+AV.Cloud.afterUpdate("UserFavicon", function(request) {
+    var user = request.user;
+    var userQ = new AV.Query(User);
+    userQ.equalTo("objectId", user.id);
+    userQ.include('userCount');
+    userQ.include('userFavicon');
+    userQ.first().then(function(user){
+
+        console.log(user.id);
         var userFavicon = user.get('userFavicon');
 //        console.dir(userFavicon);
         var userFR = userFavicon.relation('threads');
@@ -515,13 +591,13 @@ AV.Cloud.afterUpdate("UserFavicon", function(request) {
         return userFR.query().find();
 //        return userFR.query().count();
 
-        }).then(function(objects){
+    }).then(function(objects){
 
 //            console.log(objects.length);
-        var userCount = user.get('userCount');
+            var userCount = user.get('userCount');
 //            console.dir(userCount);
-        userCount.set('numberOfFavicon',objects.length);
-        return userCount.save();
+            userCount.set('numberOfFavicon',objects.length);
+            return userCount.save();
 
         }).then(function(userCount) {
             console.dir(userCount);
@@ -531,5 +607,5 @@ AV.Cloud.afterUpdate("UserFavicon", function(request) {
 
             console.log("收藏失败！");
 
-    });
+        });
 });
