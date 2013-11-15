@@ -10,133 +10,133 @@ var _credits = 0;
 var _experience = 0;
 
 
-AV.Cloud.setInterval('refreash_thread_count', 60*30, function(){
-
-    var userQuery = new AV.Query(User);
-    userQuery.include("userFavicon");
-    userQuery.find().then(function(users){
-
-        console.log("成功！！！");
-
-        for (var i = 0; i < users.length; i++) {
-
-            var user = users[i];
-
-            //numberOfThreads
-            var threadQuery = new AV.Query(Thread);
-            threadQuery.equalTo("postUser", user);
-            threadQuery.include("postUser.userCount");
-            threadQuery.find().then(function(threads){
-
-                var firThread = threads[0];
-                if (firThread)
-                {
-                    var user = firThread.get('postUser');
-
-                    var userCount = user.get('userCount');
-
-//                    console.dir(user);
-//                    console.dir(userCount);
-
-                    userCount.set('numberOfThreads',threads.length);
-
-                    return userCount.save();
-                }
-
-            },function(error){
-
-                console.log("失败1！！！");
-                console.dir(error);
-
-            });
-
-            //numberOfPosts
-            var postQuery = new AV.Query(Post);
-            postQuery.equalTo("postUser", user);
-            postQuery.include("postUser.userCount");
-            postQuery.find().then(function(posts){
-
-                var firPost = posts[0];
-                if (firPost)
-                {
-                    var user = firPost.get('postUser');
-
-                    var userCount = user.get('userCount');
-
-//                    console.dir(user);
-//                    console.dir(userCount);
-
-                    userCount.set('numberOfPosts',posts.length);
-
-                    return userCount.save();
-                }
-
-            },function(error){
-
-                console.log("失败2！！！");
-                console.dir(error);
-
-            });
-
-            //numberOfComments
-            var commentQuery = new AV.Query(Comment);
-            commentQuery.equalTo("postUser", user);
-            commentQuery.include("postUser.userCount");
-            commentQuery.find().then(function(comments){
-
-                var firComment = comments[0];
-                if (firComment)
-                {
-                    var user = firComment.get('postUser');
-
-                    var userCount = user.get('userCount');
-
-//                    console.dir(user);
-//                    console.dir(userCount);
-
-                    userCount.set('numberOfComments',comments.length);
-
-                    return userCount.save();
-                }
-
-            },function(error){
-
-                console.log("失败3！！！");
-                console.dir(error);
-
-            });
-
-//            var userFavicon = user.get('userFavicon');
+//AV.Cloud.setInterval('refreash_thread_count', 60*30, function(){
 //
-//            //numberOfSupports
-//            var supportQuery = userFavicon.relation('supports') ;
-////            supportQuery.equalTo("postUser", user);
-//            supportQuery.include('user');
-//            supportQuery.find().then(function(supports){
+//    var userQuery = new AV.Query(User);
+//    userQuery.include("userFavicon");
+//    userQuery.find().then(function(users){
 //
-//                var user = firSupport.get('postUser');
+//        console.log("成功！！！");
 //
-//                var userCount = user.get('userCount');
+//        for (var i = 0; i < users.length; i++) {
 //
-//                userCount.set('numberOfSupports',supports.length);
+//            var user = users[i];
 //
-//                return userCount.save();
+//            //numberOfThreads
+//            var threadQuery = new AV.Query(Thread);
+//            threadQuery.equalTo("postUser", user);
+//            threadQuery.include("postUser.userCount");
+//            threadQuery.find().then(function(threads){
+//
+//                var firThread = threads[0];
+//                if (firThread)
+//                {
+//                    var user = firThread.get('postUser');
+//
+//                    var userCount = user.get('userCount');
+//
+////                    console.dir(user);
+////                    console.dir(userCount);
+//
+//                    userCount.set('numberOfThreads',threads.length);
+//
+//                    return userCount.save();
+//                }
 //
 //            },function(error){
 //
-//                console.log("失败4！！！");
+//                console.log("失败1！！！");
 //                console.dir(error);
 //
 //            });
-        }
-
-    },function(error){
-
-        console.log("失败0！！！");
-        console.dir(error);
-    });
-
-});
+//
+//            //numberOfPosts
+//            var postQuery = new AV.Query(Post);
+//            postQuery.equalTo("postUser", user);
+//            postQuery.include("postUser.userCount");
+//            postQuery.find().then(function(posts){
+//
+//                var firPost = posts[0];
+//                if (firPost)
+//                {
+//                    var user = firPost.get('postUser');
+//
+//                    var userCount = user.get('userCount');
+//
+////                    console.dir(user);
+////                    console.dir(userCount);
+//
+//                    userCount.set('numberOfPosts',posts.length);
+//
+//                    return userCount.save();
+//                }
+//
+//            },function(error){
+//
+//                console.log("失败2！！！");
+//                console.dir(error);
+//
+//            });
+//
+//            //numberOfComments
+//            var commentQuery = new AV.Query(Comment);
+//            commentQuery.equalTo("postUser", user);
+//            commentQuery.include("postUser.userCount");
+//            commentQuery.find().then(function(comments){
+//
+//                var firComment = comments[0];
+//                if (firComment)
+//                {
+//                    var user = firComment.get('postUser');
+//
+//                    var userCount = user.get('userCount');
+//
+////                    console.dir(user);
+////                    console.dir(userCount);
+//
+//                    userCount.set('numberOfComments',comments.length);
+//
+//                    return userCount.save();
+//                }
+//
+//            },function(error){
+//
+//                console.log("失败3！！！");
+//                console.dir(error);
+//
+//            });
+//
+////            var userFavicon = user.get('userFavicon');
+////
+////            //numberOfSupports
+////            var supportQuery = userFavicon.relation('supports') ;
+//////            supportQuery.equalTo("postUser", user);
+////            supportQuery.include('user');
+////            supportQuery.find().then(function(supports){
+////
+////                var user = firSupport.get('postUser');
+////
+////                var userCount = user.get('userCount');
+////
+////                userCount.set('numberOfSupports',supports.length);
+////
+////                return userCount.save();
+////
+////            },function(error){
+////
+////                console.log("失败4！！！");
+////                console.dir(error);
+////
+////            });
+//        }
+//
+//    },function(error){
+//
+//        console.log("失败0！！！");
+//        console.dir(error);
+//    });
+//
+//});
 
 //发帖前
 AV.Cloud.beforeSave('Thread', function(request, response) {
