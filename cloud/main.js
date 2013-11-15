@@ -401,37 +401,13 @@ AV.Cloud.afterSave('Post', function(request, response){
 //删除回复
 AV.Cloud.afterDelete("Post", function(request) {
 
+    //检查用户回复
     var user = request.user;
-    var userId = AV.Object.createWithoutData("_User", user.id);
+    checkUserNumberOfPosts(user);
 
-    var postQ = new AV.Query(Post);
-    postQ.equalTo("postUser", userId);
-    postQ.count().then(function(count){
-
-        //user的回复数+1
-        console.log('user的回复数+1');
-
-//        console.log('userCount');
-
-        var userCount = user.get('userCount');
-
-//        console.dir(userCount);
-
-        userCount.set('numberOfPosts',count);
-
-//        console.dir(userCount);
-
-        return userCount.save();
-
-    }).then(function(userCount) {
-
-            console.log('用户回复数: '+userCount.get('numberOfPosts'));
-
-        },function(error){
-
-            console.log('更改用户回复数失败');
-
-        });
+    //检查帖子回复
+    var post = request.object;
+    checkThreadNumberOfPosts(post);
 });
 
 //11发评论后
