@@ -359,17 +359,22 @@ AV.Cloud.afterSave('Comment', function(request, response){
     var post = comment.get('post');
 
     var creditRuleId;
+    var postId = AV.Object.createWithoutData("Post", post.id);
+    var commentQ = new AV.Query(Comment);
+    commentQ.equalTo("post", postId);
+    commentQ.count().then(function(count){
+        //评论
+        post.relation('comments').add(comment);
+        //评论数
+        post.set('numberOfComments',count);
+        //最后评论人
+        post.set('lastCommenter',user);   //这里就不用WithoutData
+        //最后评论时间
+        post.set('lastCommentAt',comment.get('createdAt'));
 
-    //评论
-    post.relation('comments').add(comment);
-    //评论数
-    post.increment('numberOfComments');
-    //最后评论人
-    post.set('lastCommenter',user);   //这里就不用WithoutData
-    //最后评论时间
-    post.set('lastCommentAt',comment.get('createdAt'));
+        return post.save();
 
-    post.save().then(function(post){
+    }).then(function(post){
 
         //user的评论数+1
         var userCount = user.get('userCount');
