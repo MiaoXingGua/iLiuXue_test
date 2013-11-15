@@ -10,7 +10,7 @@ var _credits = 0;
 var _experience = 0;
 
 
-AV.Cloud.setInterval('refreash_thread_count', 30, function(){
+AV.Cloud.setInterval('refreash_thread_count', 60*30, function(){
 
     var userQuery = new AV.Query(User);
     userQuery.include("userFavicon");
@@ -178,32 +178,26 @@ AV.Cloud.afterSave('Thread', function(request) {
 
     var creditRuleId;
 
+    var userId = AV.Object.createWithoutData("_User", user.id);
 
-    //最后回复时间=发帖时间
-//    var updatedAt = thread.get('updatedAt');
-//
-//    thread.set('lastPostAt',updatedAt);
-//    thread.save().then(function(thread){
+    var threadQ = new AV.Query(Thread);
+    threadQ.equalTo("postUser", userId);
+    postQ.count().then(function(count){
 
-    //user的发帖数+1
-    console.log('user的发帖数+1');
+        //最后回复时间=发帖时间
+    //    var updatedAt = thread.get('updatedAt');
+    //
+    //    thread.set('lastPostAt',updatedAt);
+    //    thread.save().then(function(thread){
 
-//    var userCount = user.get('userCount');
-//    userCount.increment('numberOfThresds');
-//    userCount.save().then(function(obj) {
-//
-//        console.log('成功');
-//        console.dir(obj);
-//
-//    }, function(error) {
-//
-//        console.log('失败');
-//        console.dir(error);
-//    });
+        //user的发帖数+1
+        console.log('user的发帖数+1');
 
-    var userCount = user.get('userCount');
-    userCount.increment('numberOfThreads');
-    userCount.save().then(function(){
+        var userCount = user.get('userCount');
+        userCount.set('numberOfThreads',count);
+        return userCount.save();
+
+        }).then(function(){
 
             //查找规则
             var crQuery = new AV.Query('CreditRule');
@@ -261,7 +255,9 @@ AV.Cloud.afterSave('Post', function(request, response){
     var thread = post.get('thread');
 
     var creditRuleId;
+
     var threadId = AV.Object.createWithoutData("Thread", thread.id);
+
     var postQ = new AV.Query(Post);
     postQ.equalTo("thread", threadId);
     postQ.count().then(function(count){
