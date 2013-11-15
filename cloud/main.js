@@ -509,8 +509,13 @@ AV.Cloud.afterUpdate("UserFavicon", function(request) {
 
         console.dir(user);
         var userFavicon = user.get('userFavicon');
+        console.dir(userFavicon);
         var userFTQ = userFavicon.relation('threads');
         return userFTQ.count();
+
+        },function(error){
+
+        console.log("收藏失败123456！");
 
         }).then(function(count){
 
