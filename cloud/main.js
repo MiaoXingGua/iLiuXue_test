@@ -515,7 +515,7 @@ AV.Cloud.afterUpdate("UserFavicon", function(request) {
 
         }).then(function(count){
 
-            console.log(cont);
+            console.log(count);
         var userCount = user.get('userCount');
         userCount.set('numberOfFavicon',count);
         return userCount.save();
