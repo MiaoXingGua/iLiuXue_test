@@ -2,6 +2,7 @@
 var Thread = AV.Object.extend('Thread');
 var Post = AV.Object.extend('Post');
 var Commnet = AV.Object.extend('Commnet');
+var UserFavicon = AV.Object.extend('UserFavicon');
 var CreditRuleLog = AV.Object.extend('CreditRuleLog');
 var User = AV.Object.extend('_User');
 
@@ -12,17 +13,16 @@ var _experience = 0;
 AV.Cloud.setInterval('refreash_thread_count', 30, function(){
 
     var userQuery = new AV.Query(User);
+    userQuery.include("userFavicon");
     userQuery.find().then(function(users){
 
-        console.log("成功1！！！");
-//        console.log(users.length);
+        console.log("成功！！！");
 
         for (var i = 0; i < users.length; i++) {
 
-//            console.log(i);
             var user = users[i];
-//            console.log(user.get('username'));
 
+            //numberOfThreads
             var threadQuery = new AV.Query(Thread);
             threadQuery.equalTo("postUser", user);
             threadQuery.include("postUser.userCount");
@@ -35,43 +35,104 @@ AV.Cloud.setInterval('refreash_thread_count', 30, function(){
 
                     var userCount = user.get('userCount');
 
-                    console.dir(user);
-                    console.dir(userCount);
+//                    console.dir(user);
+//                    console.dir(userCount);
 
                     userCount.set('numberOfThreads',threads.length);
 
                     return userCount.save();
                 }
 
-//                console.log(user.get('username'));
+            },function(error){
 
-//                console.log(count);
-//                console.log(user.get('username'));
+                console.log("失败1！！！");
+                console.dir(error);
 
-//               if (users[i].get('username') == '123456789')
-//               {
-//                   console.log(count);
-//                   var userCount = users[i].get('userCount');
-//                   userCount.set('numberOfThreads',count);
-//                   return userCount.save();
-//               }
-//
-            }).then(function(userCount){
-//
-                console.log("成功2！！！");
-                console.log(userCount);
-//
+            });
+
+            //numberOfPosts
+            var postQuery = new AV.Query(Post);
+            postQuery.equalTo("postUser", user);
+            postQuery.include("postUser.userCount");
+            postQuery.find().then(function(posts){
+
+                var firPost = posts[0];
+                if (firPost)
+                {
+                    var user = firPost.get('postUser');
+
+                    var userCount = user.get('userCount');
+
+//                    console.dir(user);
+//                    console.dir(userCount);
+
+                    userCount.set('numberOfPosts',posts.length);
+
+                    return userCount.save();
+                }
+
             },function(error){
 
                 console.log("失败2！！！");
                 console.dir(error);
 
             });
+
+            //numberOfComments
+            var commentQuery = new AV.Query(Comment);
+            commentQuery.equalTo("postUser", user);
+            commentQuery.include("postUser.userCount");
+            commentQuery.find().then(function(comments){
+
+                var firComment = comments[0];
+                if (firComment)
+                {
+                    var user = firComment.get('postUser');
+
+                    var userCount = user.get('userCount');
+
+//                    console.dir(user);
+//                    console.dir(userCount);
+
+                    userCount.set('numberOfComments',posts.length);
+
+                    return userCount.save();
+                }
+
+            },function(error){
+
+                console.log("失败3！！！");
+                console.dir(error);
+
+            });
+
+//            var userFavicon = user.get('userFavicon');
+//
+//            //numberOfSupports
+//            var supportQuery = userFavicon.relation('supports') ;
+////            supportQuery.equalTo("postUser", user);
+//            supportQuery.include('user');
+//            supportQuery.find().then(function(supports){
+//
+//                var user = firSupport.get('postUser');
+//
+//                var userCount = user.get('userCount');
+//
+//                userCount.set('numberOfSupports',supports.length);
+//
+//                return userCount.save();
+//
+//            },function(error){
+//
+//                console.log("失败4！！！");
+//                console.dir(error);
+//
+//            });
         }
 
     },function(error){
 
-        console.log("失败1！！！");
+        console.log("失败0！！！");
         console.dir(error);
     });
 
