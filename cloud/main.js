@@ -19,12 +19,14 @@ AV.Cloud.setInterval('refreash_thread_count', 30, function(){
 
         for (var i = 0; i < users.length; i++) {
 
-//            var user = users[i];
-//
-//            var threadQuery = new AV.Query(Thread);
-//            threadQuery.equalTo("postUser", user);
-//            threadQuery.count().then(function(count){
-//
+            var user = users[i];
+
+            var threadQuery = new AV.Query(Thread);
+            threadQuery.equalTo("postUser", user);
+            threadQuery.count().then(function(count){
+
+                console.log(user.get('username'));
+
 //               if (users[i].get('username') == '123456789')
 //               {
 //                   console.log(count);
@@ -33,17 +35,17 @@ AV.Cloud.setInterval('refreash_thread_count', 30, function(){
 //                   return userCount.save();
 //               }
 //
-//            }).then(function(userCount){
+            }).then(function(userCount){
 //
 ////                console.log("成功2！！！");
 ////                    console.log(userCount);
 //
-//            },function(error){
-//
-//                console.log("失败2！！！");
-//                console.dir(error);
-//
-//            });
+            },function(error){
+
+                console.log("失败2！！！");
+                console.dir(error);
+
+            });
         }
 
     },function(error){
