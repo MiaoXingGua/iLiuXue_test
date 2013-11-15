@@ -182,7 +182,7 @@ AV.Cloud.afterSave('Thread', function(request) {
 
     var threadQ = new AV.Query(Thread);
     threadQ.equalTo("postUser", userId);
-    postQ.count().then(function(count){
+    threadQ.count().then(function(count){
 
         //最后回复时间=发帖时间
     //    var updatedAt = thread.get('updatedAt');
