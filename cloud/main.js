@@ -507,12 +507,14 @@ AV.Cloud.afterUpdate("UserFavicon", function(request) {
     userQ.include('userFavicon');
     userQ.first().then(function(user){
 
+        consolo.dir(user);
         var userFavicon = user.get('userFavicon');
         var userFTQ = userFavicon.relation('threads');
         return userFTQ.count();
 
         }).then(function(count){
 
+        consolo.log(cont);
         var userCount = user.get('userCount');
         userCount.set('numberOfFavicon',count);
         return userCount.save();
