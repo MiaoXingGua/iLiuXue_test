@@ -511,13 +511,13 @@ AV.Cloud.afterUpdate("UserFavicon", function(request) {
         var userFavicon = user.get('userFavicon');
         console.dir(userFavicon);
         var userFR = userFavicon.relation('threads');
-        return userFR.query().count();
+        return userFR.query().find();
 
-        }).then(function(count){
+        }).then(function(objs){
 
-            console.log(count);
+            console.log(objs.length);
         var userCount = user.get('userCount');
-        userCount.set('numberOfFavicon',count);
+        userCount.set('numberOfFavicon',objs.length);
         return userCount.save();
 
         }).then(function() {
