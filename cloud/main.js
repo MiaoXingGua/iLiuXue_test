@@ -15,17 +15,18 @@ AV.Cloud.setInterval('refreash_thread_count', 30, function(){
     userQuery.find().then(function(users){
 
         console.log("成功1！！！");
-//        console.log(users.length);
+        console.log(users.length);
 
         for (var i = 0; i < users.length; i++) {
 
-            var user = users[i];
 
+//            console.log(user.get('username'));
             var threadQuery = new AV.Query(Thread);
             threadQuery.equalTo("postUser", users[i]);
             threadQuery.count().then(function(count){
-
-                console.log(users[i].get('username'));
+                console.log(i);
+//                var user = users[i];
+//                console.log(user.get('username'));
 
 //               if (users[i].get('username') == '123456789')
 //               {
