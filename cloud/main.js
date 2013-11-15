@@ -25,7 +25,7 @@ AV.Cloud.setInterval('refreash_thread_count', 30, function(){
 
             var threadQuery = new AV.Query(Thread);
             threadQuery.equalTo("postUser", user);
-            threadQuery.include("userCount");
+            threadQuery.include("postUser.userCount");
             threadQuery.find().then(function(threads){
 
                 var firThread = threads[0];
