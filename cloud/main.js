@@ -535,42 +535,43 @@ AV.Cloud.afterDelete("Comment", function(request) {
 
 
 //收藏主题or取消收藏主题
-//AV.Cloud.afterUpdate("UserFavicon", function(request) {
-//    var user = request.user;
-//    var userQ = new AV.Query(User);
-//    userQ.equalTo("objectId", user.id);
-//    userQ.include('userCount');
-//    userQ.include('userFavicon');
-//    userQ.first().then(function(user){
-//
-//        console.log(user.id);
-//
-//        var userFavicon = user.get('userFavicon');
-////        console.dir(userFavicon);
-//        var userTFR = userFavicon.relation('threads');
-////        console.dir(userFR);
-//        return userTFR.query().find();
-////        return userFR.query().count();
-//
-//        }).then(function(objects){
-//            //收藏主题or取消收藏主题
-////            console.log(objects.length);
-//            var userCount = user.get('userCount');
-////            console.dir(userCount);
-//            userCount.set('numberOfFavicon',objects.length);
-//        return userCount.save();
-//
-//        }).then(function(userCount) {
+AV.Cloud.afterUpdate("UserFavicon", function(request) {
+    var user = request.user;
+    var userFavicon = request.object;
+
+    var userQ = new AV.Query(User);
+    userQ.equalTo("objectId", user.id);
+    userQ.include('userCount');
+    userQ.include('userFavicon');
+    userQ.first().then(function(user){
+
+
+        var userFavicon = user.get('userFavicon');
+//        console.dir(userFavicon);
+        var userTFR = userFavicon.relation('threads');
+//        console.dir(userFR);
+        return userTFR.query().find();
+//        return userFR.query().count();
+
+        }).then(function(objects){
+            //收藏主题or取消收藏主题
+//            console.log(objects.length);
+            var userCount = user.get('userCount');
 //            console.dir(userCount);
-//            console.log("收藏成功！");
-//        //赞回复or取消赞回复
-//
-//        },function(error){
-//
-//            console.log("收藏失败！");
-//
-//    });
-//});
+            userCount.set('numberOfFavicon',objects.length);
+        return userCount.save();
+
+        }).then(function(userCount) {
+            console.dir(userCount);
+            console.log("收藏成功！");
+        //赞回复or取消赞回复
+
+        },function(error){
+
+            console.log("收藏失败！");
+
+    });
+});
 
 //赞回复or取消赞回复
 //AV.Cloud.afterUpdate("UserFavicon", function(request) {
