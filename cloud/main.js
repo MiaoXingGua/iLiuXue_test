@@ -334,6 +334,30 @@ var checkThreadNumberOfPosts = function(post){
         });
 }
 
+var checkUserNumberOfBestPosts = function(user){
+
+    var userId = AV.Object.createWithoutData("_User", user.id);
+
+    var postQ = new AV.Query(Post);
+    postQ.equalTo("postUser", userId);
+    postQ.equalTo("state", 1);
+    postQ.count().then(function(count){
+
+        var userCount = user.get('userCount');
+        userCount.set('numberOfPosts',count);
+        return userCount.save();
+
+    }).then(function(userCount) {
+
+            console.log('用户回复数: '+userCount.get('numberOfPosts'));
+
+        },function(error){
+
+            console.log('更改用户回复数失败');
+
+        });
+}
+
 //发回复后
 AV.Cloud.afterSave('Post', function(request, response){
 
@@ -416,6 +440,13 @@ AV.Cloud.afterDelete("Post", function(request) {
     //检查帖子回复
     var post = request.object;
     checkThreadNumberOfPosts(post);
+});
+
+//更新回复
+AV.Cloud.afterUpdate("Post", function(request){
+
+    var user = request.user;
+    checkUserNumberOfBestPosts(user);
 });
 
 
