@@ -430,7 +430,7 @@ AV.Cloud.afterSave('Post', function(request, response){
         });
 });
 
-//删除回复1
+//删除回复
 AV.Cloud.afterDelete("Post", function(request) {
 
     //检查用户回复
@@ -446,6 +446,7 @@ AV.Cloud.afterDelete("Post", function(request) {
 AV.Cloud.afterUpdate("Post", function(request){
 
     var user = request.user;
+    console.log('最佳回复！！！！！');
     checkUserNumberOfBestPosts(user);
 });
 
