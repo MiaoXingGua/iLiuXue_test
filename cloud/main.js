@@ -438,12 +438,12 @@ AV.Cloud.afterDelete("Post", function(request) {
 var checkUserNumberOfComments = function(user){
 
     var userId = AV.Object.createWithoutData("_User", user.id);
-    console.log('修改用户评论数：'+userId);
+    console.log('修改用户评论数：'+user.id);
     var commentQ = new AV.Query(commentQ);
     commentQ.equalTo("postUser", userId);
     commentQ.count().then(function(count){
 
-        console.log('count：'+count);
+        console.log(count);
         var userCount = user.get('userCount');
         userCount.set('numberOfComments',count);
         return userCount.save();
