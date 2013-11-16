@@ -241,6 +241,30 @@ AV.Cloud.afterSave('Thread', function(request) {
         });
 });
 
+//删除主题
+AV.Cloud.afterDelete("Thread", function(request) {
+
+    var postUser = request.object.get('postUser');
+//    console.dir(postUser);
+
+    var userCount = postUser.get('userCount');
+//    console.dir(userCount);
+
+    userCount.increment('numberOfThreads',-1);
+    userCount.save(null, {
+        success: function(userCount) {
+
+            console.log('删除主题成功');
+            console.dir(creditRuleLog);
+        },
+        error: function(userCount, error) {
+
+            console.log('删除主题失败');
+            console.dir(error);
+        }
+    });
+});
+
 //更该帖子
 AV.Cloud.afterSave('Post', function(request){
 
@@ -324,7 +348,6 @@ var checkThreadNumberOfPosts = function(post){
             console.log('更改帖子回复数失败');
 
         });
-
 }
 
 //发回复后
@@ -411,53 +434,71 @@ AV.Cloud.afterDelete("Post", function(request) {
     checkThreadNumberOfPosts(post);
 });
 
-//11发评论后
-AV.Cloud.afterSave('Comment', function(request, response){
 
-    var comment = request.object;
+var checkUserNumberOfComments = function(user){
 
-    var type = 22;
+    var userId = AV.Object.createWithoutData("_User", user.id);
 
-    var user = request.user;
+    var commentQ = new AV.Query(commentQ);
+    commentQ.equalTo("postUser", userId);
+    commentQ.count().then(function(count){
+
+        var userCount = user.get('userCount');
+        userCount.set('numberOfComments',count);
+        return userCount.save();
+
+    }).then(function(userCount) {
+
+            console.log('用户评论数: '+userCount.get('numberOfComments'));
+
+        },function(error){
+
+            console.log('更改用户评论数失败');
+
+        });
+}
+
+var checkPostNumberOfComments = function(comment){
+
     var post = comment.get('post');
-
-    var creditRuleId;
     var postId = AV.Object.createWithoutData("Post", post.id);
+
     var commentQ = new AV.Query(Comment);
     commentQ.equalTo("post", postId);
     commentQ.count().then(function(count){
-        //评论
-        post.relation('comments').add(comment);
-        //评论数
-        post.set('numberOfComments',count);
-        //最后评论人
-        post.set('lastCommenter',user);   //这里就不用WithoutData
-        //最后评论时间
-        post.set('lastCommentAt',comment.get('createdAt'));
 
+        //回复数
+        post.set('numberOfComments',count);
         return post.save();
 
-    }).then(function(post){
+    }).then(function(post) {
 
-        //user的评论数+1
-        var userCount = user.get('userCount');
+            console.log('回复评论数: '+post.get('numberOfComments'));
 
-        console.dir(userCount);
+        },function(error){
 
-        userCount.increment('numberOfComments');
+            console.log('更改回复评论数失败');
 
-        return userCount.save();    //user.save() 不会save到userCount
+        });
+}
 
-//        }).then(function(user){
+//发评论后
+AV.Cloud.afterSave('Comment', function(request, response){
 
-        }).then(function(){
+    var type = 22;
+    var creditRuleId;
 
-            //查找规则
-            var crQuery = new AV.Query('CreditRule');
-            crQuery.equalTo('type', type);
-            return crQuery.first();
+    var user = request.user;
+    checkUserNumberOfComments(user);
 
-        }).then(function(object){
+    var comment = request.object;
+    checkPostNumberOfComments(comment);
+
+    //查找规则
+    console.log('查找规则');
+    var crQuery = new AV.Query('CreditRule');
+    crQuery.equalTo('type', type);
+    crQuery.first().then(function(object){
 
             creditRuleId =AV.Object.createWithoutData("CreditRule", object.id);
             _credits = object.get('credits');
@@ -496,50 +537,14 @@ AV.Cloud.afterSave('Comment', function(request, response){
 //删除评论
 AV.Cloud.afterDelete("Comment", function(request) {
 
-    var postUser = request.object.get('postUser');
-//    console.dir(postUser);
+    var user = request.user;
+    checkUserNumberOfComments(user);
 
-    var userCount = postUser.get('userCount');
-    console.dir(userCount);
-
-    userCount.increment('numberOfComments',-1);
-    userCount.save(null, {
-        success: function(userCount) {
-
-            console.log('删除评论成功');
-            console.dir(creditRuleLog);
-        },
-        error: function(userCount, error) {
-
-            console.log('删除评论失败');
-            console.dir(error);
-        }
-    });
+    var comment = request.object;
+    checkPostNumberOfComments(comment);
 });
 
-//删除主题
-AV.Cloud.afterDelete("Thread", function(request) {
 
-    var postUser = request.object.get('postUser');
-//    console.dir(postUser);
-
-    var userCount = postUser.get('userCount');
-//    console.dir(userCount);
-
-    userCount.increment('numberOfThreads',-1);
-    userCount.save(null, {
-        success: function(userCount) {
-
-            console.log('删除主题成功');
-            console.dir(creditRuleLog);
-        },
-        error: function(userCount, error) {
-
-            console.log('删除主题失败');
-            console.dir(error);
-        }
-    });
-});
 
 
 
