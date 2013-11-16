@@ -194,6 +194,7 @@ AV.Cloud.afterSave('Thread', function(request) {
 
     var type = 11;
     var creditRuleId;
+    var thread = request.object;
     var price = thread.get('price');
 
     var user = request.user;
