@@ -601,12 +601,12 @@ AV.Cloud.afterUpdate("UserFavicon", function(request) {
 
         }).then(function(userCount) {
             console.dir(userCount);
-            console.log("收藏成功！");
+            console.log("赞成功！");
             //赞回复or取消赞回复
 
         },function(error){
 
-            console.log("收藏失败！");
+            console.log("赞失败！");
 
         });
 });
