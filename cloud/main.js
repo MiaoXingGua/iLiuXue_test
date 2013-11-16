@@ -138,6 +138,28 @@ var _experience = 0;
 //
 //});
 
+var checkUserNumberOfThreads = function(user){
+    var userId = AV.Object.createWithoutData("_User", user.id);
+
+    var threadQ = new AV.Query(Thread);
+    threadQ.equalTo("postUser", userId);
+    threadQ.count().then(function(count){
+
+        var userCount = user.get('userCount');
+        userCount.set('numberOfThreads',count);
+        return userCount.save();
+
+    }).then(function(userCount) {
+
+            console.log('用户发帖数: '+userCount.get('numberOfPosts'));
+
+        },function(error){
+
+            console.log('更改用户发帖数失败');
+
+        });
+}
+
 //发帖前
 AV.Cloud.beforeSave('Thread', function(request, response) {
 
@@ -170,99 +192,60 @@ AV.Cloud.beforeSave('Thread', function(request, response) {
 //发帖后
 AV.Cloud.afterSave('Thread', function(request) {
 
-    var thread = request.object;
     var type = 11;
-    var user = request.user;
-
+    var creditRuleId;
     var price = thread.get('price');
 
-    var creditRuleId;
+    var user = request.user;
+    checkUserNumberOfThreads(user);
 
-    var userId = AV.Object.createWithoutData("_User", user.id);
+    //查找规则
+    var crQuery = new AV.Query('CreditRule');
+    crQuery.equalTo('type', type);
+    return crQuery.first().then(function(object){
 
-    var threadQ = new AV.Query(Thread);
-    threadQ.equalTo("postUser", userId);
-    threadQ.count().then(function(count){
+        creditRuleId = AV.Object.createWithoutData("CreditRule", object.id);
+        _credits = object.get('credits')-price;
+        _experience = object.get('experience');
 
-        //最后回复时间=发帖时间
-    //    var updatedAt = thread.get('updatedAt');
-    //
-    //    thread.set('lastPostAt',updatedAt);
-    //    thread.save().then(function(thread){
+        //调整积分
+        user.increment('credits',_credits);
+        //调整经验值
+        user.increment('experience',_experience);
 
-        //user的发帖数+1
-        console.log('user的发帖数+1');
+        return user.save();
 
-        var userCount = user.get('userCount');
-        userCount.set('numberOfThreads',count);
-        return userCount.save();
+    }).then(function(user){
 
-        }).then(function(){
+        //增加积分变更记录
+        var creditRuleLog = new CreditRuleLog();
+        var userId = AV.Object.createWithoutData("_User", user.id);
+        creditRuleLog.set('user',userId);
+        creditRuleLog.set('type',creditRuleId);
+        creditRuleLog.set('accumulativeCredit',_credits);
+        creditRuleLog.set('accumulativeExperience',_experience);
+        return creditRuleLog.save();
 
-            //查找规则
-            var crQuery = new AV.Query('CreditRule');
-            crQuery.equalTo('type', type);
-            return crQuery.first();
+    }).then(function(obj){
 
-        }).then(function(object){
+        console.log('发帖成功');
+        console.dir(obj);
 
-            creditRuleId = AV.Object.createWithoutData("CreditRule", object.id);
-            _credits = object.get('credits')-price;
-            _experience = object.get('experience');
+    },function(error){
 
-            //调整积分
-            user.increment('credits',_credits);
-            //调整经验值
-            user.increment('experience',_experience);
+        console.log('发帖失败');
+        console.dir(error);
 
-            return user.save();
-
-        }).then(function(user){
-
-            //增加积分变更记录
-            var creditRuleLog = new CreditRuleLog();
-            var userId = AV.Object.createWithoutData("_User", user.id);
-            creditRuleLog.set('user',userId);
-            creditRuleLog.set('type',creditRuleId);
-            creditRuleLog.set('accumulativeCredit',_credits);
-            creditRuleLog.set('accumulativeExperience',_experience);
-            return creditRuleLog.save();
-
-        }).then(function(obj){
-
-            console.log('发帖成功');
-            console.dir(obj);
-
-        },function(error){
-
-            console.log('发帖失败');
-            console.dir(error);
-
-        });
+    });
 });
 
 //删除主题
 AV.Cloud.afterDelete("Thread", function(request) {
 
-    var postUser = request.object.get('postUser');
-//    console.dir(postUser);
+//    var postUser = request.object.get('postUser');
+    var user = request.user;
+    checkUserNumberOfThreads(user);
 
-    var userCount = postUser.get('userCount');
-//    console.dir(userCount);
-
-    userCount.increment('numberOfThreads',-1);
-    userCount.save(null, {
-        success: function(userCount) {
-
-            console.log('删除主题成功');
-            console.dir(creditRuleLog);
-        },
-        error: function(userCount, error) {
-
-            console.log('删除主题失败');
-            console.dir(error);
-        }
-    });
 });
 
 //更该帖子
