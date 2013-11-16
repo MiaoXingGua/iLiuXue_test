@@ -430,7 +430,7 @@ AV.Cloud.afterSave('Post', function(request, response){
         });
 });
 
-//删除回复
+//删除回复1
 AV.Cloud.afterDelete("Post", function(request) {
 
     //检查用户回复
