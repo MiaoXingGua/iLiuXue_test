@@ -561,11 +561,6 @@ AV.Cloud.afterDelete("Comment", function(request) {
 });
 
 
-
-
-
-
-
 //收藏主题or取消收藏主题
 AV.Cloud.afterUpdate("UserFavicon", function(request) {
     var user = request.user;
