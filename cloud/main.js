@@ -363,7 +363,7 @@ AV.Cloud.afterSave('Post', function(request, response){
 
     var type = 21;
     var creditRuleId;
-
+    console.log('发回复');
     //检查用户回复
     var user = request.user;
     checkUserNumberOfPosts(user);
