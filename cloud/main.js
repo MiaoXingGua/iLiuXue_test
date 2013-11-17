@@ -344,16 +344,16 @@ var checkUserNumberOfBestPosts = function(user){
     postQ.count().then(function(count){
 
         var userCount = user.get('userCount');
-        userCount.set('numberOfPosts',count);
+        userCount.set('numberOfBestPosts',count);
         return userCount.save();
 
     }).then(function(userCount) {
 
-            console.log('用户回复数: '+userCount.get('numberOfPosts'));
+            console.log('用户最佳回复数: '+userCount.get('numberOfBestPosts'));
 
         },function(error){
 
-            console.log('更改用户回复数失败');
+            console.log('更改用户最佳回复数失败');
 
         });
 }
