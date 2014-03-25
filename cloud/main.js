@@ -276,6 +276,7 @@ function checkPostNumberOfComments(comment){
 //发帖前
 AV.Cloud.beforeSave('Thread', function(request, response) {
 
+    console.log("发帖前");
     var user = request.user;
     var credits = user.get("credits");
 
@@ -306,6 +307,7 @@ AV.Cloud.beforeSave('Thread', function(request, response) {
 //发帖后
 AV.Cloud.afterSave('Thread', function(request) {
 
+    console.log("发帖后");
     var type = 11;
     var creditRuleId;
     var thread = request.object;
