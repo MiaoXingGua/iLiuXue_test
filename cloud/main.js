@@ -19,19 +19,21 @@ function checkUserNumberOfThreads(user){
     threadQ.equalTo("postUser", userId);
     threadQ.count().then(function(count){
 
+        console.log("用户实际发帖数："+count);
         threadCount = count;
         var userCount = user.get('userCount');
         return userCount.fetch;
 
         }).then(function(userCount) {
 
+        console.log("用户显示发帖数："+userCount.get('numberOfThreads'));
         userCount.set('numberOfThreads',threadCount);
         return userCount.save();
 
         }).then(function(userCount) {
 
             if (!__production)
-            console.log('用户发帖数: '+userCount.get('numberOfPosts'));
+            console.log('用户发帖数: '+userCount.get('numberOfThreads'));
 
         },function(error){
 
