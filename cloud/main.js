@@ -21,11 +21,12 @@ function checkUserNumberOfThreads(user){
 
         console.log("用户实际发帖数："+count);
         threadCount = count;
+
+//        return user.fetch;
+//
+//        }).then(function(user) {
+
         var userCount = user.get('userCount');
-        return userCount.fetch;
-
-        }).then(function(userCount) {
-
         console.log("用户显示发帖数："+userCount.get('numberOfThreads'));
         userCount.set('numberOfThreads',threadCount);
         return userCount.save();
@@ -281,14 +282,14 @@ AV.Cloud.beforeSave('Thread', function(request, response) {
     var credits = user.get("credits");
 
 //    if (!__production)
-        console.log('用户积分'+credits);
+        console.log('用户积分 :'+credits);
 
 
     var thread = request.object;
     var price = thread.get('price');
 
 //    if (!__production)
-        console.log('悬赏积分'+price);
+        console.log('悬赏积分 :'+price);
     if (!price) price = 0;
 
     if (credits >= price+5)
