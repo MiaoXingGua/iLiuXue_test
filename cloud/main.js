@@ -9,155 +9,267 @@ var User = AV.Object.extend('_User');
 var _credits = 0;
 var _experience = 0;
 
+//检查用户发帖数
+function checkUserNumberOfThreads(user){
 
-//AV.Cloud.setInterval('refreash_thread_count', 60*30, function(){
-//
-//    var userQuery = new AV.Query(User);
-//    userQuery.include("userFavicon");
-//    userQuery.find().then(function(users){
-//
-//        console.log("成功！！！");
-//
-//        for (var i = 0; i < users.length; i++) {
-//
-//            var user = users[i];
-//
-//            //numberOfThreads
-//            var threadQuery = new AV.Query(Thread);
-//            threadQuery.equalTo("postUser", user);
-//            threadQuery.include("postUser.userCount");
-//            threadQuery.find().then(function(threads){
-//
-//                var firThread = threads[0];
-//                if (firThread)
-//                {
-//                    var user = firThread.get('postUser');
-//
-//                    var userCount = user.get('userCount');
-//
-////                    console.dir(user);
-////                    console.dir(userCount);
-//
-//                    userCount.set('numberOfThreads',threads.length);
-//
-//                    return userCount.save();
-//                }
-//
-//            },function(error){
-//
-//                console.log("失败1！！！");
-//                console.dir(error);
-//
-//            });
-//
-//            //numberOfPosts
-//            var postQuery = new AV.Query(Post);
-//            postQuery.equalTo("postUser", user);
-//            postQuery.include("postUser.userCount");
-//            postQuery.find().then(function(posts){
-//
-//                var firPost = posts[0];
-//                if (firPost)
-//                {
-//                    var user = firPost.get('postUser');
-//
-//                    var userCount = user.get('userCount');
-//
-////                    console.dir(user);
-////                    console.dir(userCount);
-//
-//                    userCount.set('numberOfPosts',posts.length);
-//
-//                    return userCount.save();
-//                }
-//
-//            },function(error){
-//
-//                console.log("失败2！！！");
-//                console.dir(error);
-//
-//            });
-//
-//            //numberOfComments
-//            var commentQuery = new AV.Query(Comment);
-//            commentQuery.equalTo("postUser", user);
-//            commentQuery.include("postUser.userCount");
-//            commentQuery.find().then(function(comments){
-//
-//                var firComment = comments[0];
-//                if (firComment)
-//                {
-//                    var user = firComment.get('postUser');
-//
-//                    var userCount = user.get('userCount');
-//
-////                    console.dir(user);
-////                    console.dir(userCount);
-//
-//                    userCount.set('numberOfComments',comments.length);
-//
-//                    return userCount.save();
-//                }
-//
-//            },function(error){
-//
-//                console.log("失败3！！！");
-//                console.dir(error);
-//
-//            });
-//
-////            var userFavicon = user.get('userFavicon');
-////
-////            //numberOfSupports
-////            var supportQuery = userFavicon.relation('supports') ;
-//////            supportQuery.equalTo("postUser", user);
-////            supportQuery.include('user');
-////            supportQuery.find().then(function(supports){
-////
-////                var user = firSupport.get('postUser');
-////
-////                var userCount = user.get('userCount');
-////
-////                userCount.set('numberOfSupports',supports.length);
-////
-////                return userCount.save();
-////
-////            },function(error){
-////
-////                console.log("失败4！！！");
-////                console.dir(error);
-////
-////            });
-//        }
-//
-//    },function(error){
-//
-//        console.log("失败0！！！");
-//        console.dir(error);
-//    });
-//
-//});
-
-var checkUserNumberOfThreads = function(user){
     var userId = AV.Object.createWithoutData("_User", user.id);
+    var threadCount = 0;
 
     var threadQ = new AV.Query(Thread);
     threadQ.equalTo("postUser", userId);
     threadQ.count().then(function(count){
 
+        threadCount = count;
         var userCount = user.get('userCount');
-        userCount.set('numberOfThreads',count);
+        return userCount.fetch;
+
+        }).then(function(userCount) {
+
+        userCount.set('numberOfThreads',threadCount);
         return userCount.save();
 
-    }).then(function(userCount) {
+        }).then(function(userCount) {
 
+            if (!__production)
             console.log('用户发帖数: '+userCount.get('numberOfPosts'));
 
         },function(error){
 
+            if (!__production)
             console.log('更改用户发帖数失败');
 
         });
+}
+
+//检查用户回复数
+function checkUserNumberOfPosts(user){
+
+    var userId = AV.Object.createWithoutData("_User", user.id);
+    var postCount = 0;
+
+    var postQ = new AV.Query(Post);
+    postQ.equalTo("postUser", userId);
+    postQ.count().then(function(count){
+
+        postCount = count;
+        var userCount = user.get('userCount');
+        return userCount.fetch;
+
+        }).then(function(userCount) {
+
+            userCount.set('numberOfPosts',postCount);
+            return userCount.save();
+
+        }).then(function(userCount) {
+
+            if (!__production)
+                console.log('用户最佳回复数: '+userCount.get('numberOfBestPosts'));
+
+        },function(error){
+
+            if (!__production)
+                console.log('更改用户最佳回复数失败');
+
+    });
+}
+
+//检查用户最佳回复数
+function checkUserNumberOfBestPosts(user){
+
+    var userId = AV.Object.createWithoutData("_User", user.id);
+    var postCount = 0;
+
+    var postQ = new AV.Query(Post);
+    postQ.equalTo("postUser", userId);
+    postQ.equalTo("state", 1);
+    postQ.count().then(function(count){
+
+        postCount = count;
+        var userCount = user.get('userCount');
+        return userCount.fetch;
+
+    }).then(function(userCount) {
+
+        userCount.set('numberOfBestPosts',postCount);
+        return userCount.save();
+
+    }).then(function(userCount) {
+
+        if (!__production)
+        console.log('用户最佳回复数: '+userCount.get('numberOfBestPosts'));
+
+    },function(error){
+
+        if (!__production)
+        console.log('更改用户最佳回复数失败');
+
+    });
+}
+
+//检查用户评论数
+function checkUserNumberOfComments(user){
+
+    var userId = AV.Object.createWithoutData("_User", user.id);
+    var commentCount = 0;
+
+    var commentQ = new AV.Query(UserFavicon);
+    commentQ.equalTo("postUser", userId);
+    commentQ.count().then(function(count){
+
+        commentCount = count;
+        var userCount = user.get('userCount');
+        return userCount.fetch;
+
+    }).then(function(userCount) {
+
+        userCount.set('numberOfComments',commentCount);
+        return userCount.save();
+
+    }).then(function(userCount) {
+
+            if (!__production)
+                console.log('用户评论数: '+userCount.get('numberOfComments'));
+
+        },function(error){
+
+            if (!__production)
+                console.log('更改用户评论数失败');
+
+        });
+}
+
+//检查用户赞数
+function checkUserNumberOfSupports(user){
+
+    var userId = AV.Object.createWithoutData("_User", user.id);
+    var supportConut = 0;
+
+    var userFavicon = user.get('userFavicon');
+    userFavicon.fetch().then(function(userFavicon){
+
+        var supportsQ = userFavicon.relation('supports').query();
+        return supportsQ.count();
+
+    }).then(function(count) {
+
+            supportConut = count;
+            var userCount = user.get('userCount');
+            return userCount.fetch;
+
+        }).then(function(userCount) {
+
+            userCount.set('numberOfSupports',supportConut);
+            return userCount.save();
+
+        }).then(function(userCount) {
+
+            if (!__production)
+                console.log('用户赞数: '+userCount.get('numberOfComments'));
+
+        },function(error){
+
+            if (!__production)
+                console.log('更改用户赞数失败');
+
+        });
+}
+
+//检查用户收藏数
+function checkUserNumberOfFavicons(user){
+
+    var userId = AV.Object.createWithoutData("_User", user.id);
+    var faviconConut = 0;
+
+    var userFavicon = user.get('userFavicon');
+    userFavicon.fetch().then(function(userFavicon){
+
+        var faviconQ = userFavicon.relation('threads').query();
+        return faviconQ.count();
+
+    }).then(function(count) {
+
+            faviconConut = count;
+            var userCount = user.get('userCount');
+            return userCount.fetch;
+
+        }).then(function(userCount) {
+
+            userCount.set('numberOfFavicons',supportConut);
+            return userCount.save();
+
+        }).then(function(userCount) {
+
+            if (!__production)
+                console.log('用户收藏数: '+userCount.get('numberOfFavicons'));
+
+        },function(error){
+
+            if (!__production)
+                console.log('更改用户收藏数失败');
+
+        });
+}
+
+//检查帖子的回复数
+function checkThreadNumberOfPosts(post){
+
+    var thread = post.get('thread');
+    thread.fetch(function(thread){
+
+        var threadId = AV.Object.createWithoutData("Thread", thread.id);
+        var postQ = new AV.Query(Post);
+        postQ.equalTo("thread", threadId);
+        return postQ.count();
+
+        }).then(function(count){
+
+            //回复数
+            thread.set('numberOfPosts',count);
+            return thread.save();
+
+        }).then(function(thread) {
+
+            if (!__production)
+                console.log('用户收藏数: '+thread.get('numberOfPosts'));
+
+        },function(error){
+
+            if (!__production)
+                console.log('用户收藏数: '+thread.get('numberOfPosts'));
+    });
+
+}
+
+//检查回复的评论数
+function checkPostNumberOfComments(comment){
+
+    var post = comment.get('post');
+    thread.fetch(function(post){
+
+        var postId = AV.Object.createWithoutData("Post", post.id);
+
+        var commentQ = new AV.Query(Comment);
+        commentQ.equalTo("post", postId);
+        return commentQ.count();
+
+        }).then(function(count){
+
+            //回复数
+            post.set('numberOfComments',count);
+            return post.save();
+
+        }).then(function(post) {
+
+            if (!__production)
+                console.log('回复的评论数: '+post.get('numberOfComments'));
+
+        },function(error){
+
+            if (!__production)
+                console.log('更改回复的评论数失败');
+
+    });
+
 }
 
 //发帖前
@@ -166,18 +278,21 @@ AV.Cloud.beforeSave('Thread', function(request, response) {
     var user = request.user;
     var credits = user.get("credits");
 
-    console.log('用户积分');
-    console.log(credits);
+    if (!__production)
+        console.log('用户积分');
+    if (!__production)
+        console.log(credits);
 
     var thread = request.object;
     var price = thread.get('price');
 
-    console.log('悬赏积分');
-    console.log(price);
+    if (!__production)
+        console.log('悬赏积分');
+    if (!__production)
+        console.log(price);
 
     if (credits > price+5)
     {
-
         console.log('积分足够');
         response.success();
     }
@@ -249,7 +364,7 @@ AV.Cloud.afterDelete("Thread", function(request) {
 
 });
 
-//更该帖子
+//更新帖子
 AV.Cloud.afterSave('Post', function(request){
 
     var post = request.object;
@@ -266,7 +381,6 @@ AV.Cloud.afterSave('Post', function(request){
         postQ.equalTo('state', 1);
         postQ.find().then(function(posts){
 
-            console.log('啧啧啧啧啧正则啧啧啧啧啧');
             var userCount = user.get('userCount');
             console.dir(userCount);
             userCount.set('numberOfBestPost',objects.length);
@@ -286,77 +400,7 @@ AV.Cloud.afterSave('Post', function(request){
 
 });
 
-var checkUserNumberOfPosts = function(user){
 
-    var userId = AV.Object.createWithoutData("_User", user.id);
-
-    var postQ = new AV.Query(Post);
-    postQ.equalTo("postUser", userId);
-    postQ.count().then(function(count){
-
-        var userCount = user.get('userCount');
-        userCount.set('numberOfPosts',count);
-        return userCount.save();
-
-        }).then(function(userCount) {
-
-            console.log('用户回复数: '+userCount.get('numberOfPosts'));
-
-        },function(error){
-
-            console.log('更改用户回复数失败');
-
-        });
-
-}
-
-var checkThreadNumberOfPosts = function(post){
-
-    var thread = post.get('thread');
-    var threadId = AV.Object.createWithoutData("Thread", thread.id);
-
-    var postQ = new AV.Query(Post);
-    postQ.equalTo("thread", threadId);
-    postQ.count().then(function(count){
-
-        //回复数
-        thread.set('numberOfPosts',count);
-        return thread.save();
-
-        }).then(function(thread) {
-
-            console.log('帖子回复数: '+thread.get('numberOfPosts'));
-
-        },function(error){
-
-            console.log('更改帖子回复数失败');
-
-        });
-}
-
-var checkUserNumberOfBestPosts = function(user){
-
-    var userId = AV.Object.createWithoutData("_User", user.id);
-
-    var postQ = new AV.Query(Post);
-    postQ.equalTo("postUser", userId);
-    postQ.equalTo("state", 1);
-    postQ.count().then(function(count){
-
-        var userCount = user.get('userCount');
-        userCount.set('numberOfBestPosts',count);
-        return userCount.save();
-
-    }).then(function(userCount) {
-
-            console.log('用户最佳回复数: '+userCount.get('numberOfBestPosts'));
-
-        },function(error){
-
-            console.log('更改用户最佳回复数失败');
-
-        });
-}
 
 //发回复后
 AV.Cloud.afterSave('Post', function(request, response){
@@ -371,14 +415,6 @@ AV.Cloud.afterSave('Post', function(request, response){
     //检查帖子回复
     var post = request.object;
     checkThreadNumberOfPosts(post);
-
-//    var thread = post.get('thread');
-//    //回复
-//    thread.relation('posts').add(post);
-//    //最后回复人
-//    thread.set('lastPoster',user);
-//    //最后回复时间
-//        thread.set('lastPostAt',post.get('createdAt'));
 
     //查找规则
     console.log('查找规则');
@@ -451,52 +487,7 @@ AV.Cloud.afterUpdate("Post", function(request){
 });
 
 
-var checkUserNumberOfComments = function(user){
 
-    var userId = AV.Object.createWithoutData("_User", user.id);
-
-    var commentQ = new AV.Query(Comment);
-    commentQ.equalTo("postUser", userId);
-    commentQ.count().then(function(count){
-
-        var userCount = user.get('userCount');
-        userCount.set('numberOfComments',count);
-        return userCount.save();
-
-        }).then(function(userCount) {
-
-            console.log('用户评论数: '+userCount.get('numberOfComments'));
-
-        },function(error){
-
-            console.log('更改用户评论数失败');
-
-        });
-}
-
-var checkPostNumberOfComments = function(comment){
-
-    var post = comment.get('post');
-    var postId = AV.Object.createWithoutData("Post", post.id);
-
-    var commentQ = new AV.Query(Comment);
-    commentQ.equalTo("post", postId);
-    commentQ.count().then(function(count){
-
-        //回复数
-        post.set('numberOfComments',count);
-        return post.save();
-
-    }).then(function(post) {
-
-            console.log('回复评论数: '+post.get('numberOfComments'));
-
-        },function(error){
-
-            console.log('更改回复评论数失败');
-
-        });
-}
 
 //发评论后
 AV.Cloud.afterSave('Comment', function(request, response){
@@ -582,7 +573,7 @@ AV.Cloud.afterUpdate("UserFavicon", function(request) {
 
             //收藏主题or取消收藏主题
             var userCount = user.get('userCount');
-            userCount.set('numberOfFavicon',objects.length);
+            userCount.set('numberOfFavicons',objects.length);
             return userCount.save();
 
         }).then(function(userCount) {
