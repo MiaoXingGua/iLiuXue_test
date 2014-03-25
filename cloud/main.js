@@ -278,17 +278,17 @@ AV.Cloud.beforeSave('Thread', function(request, response) {
     var user = request.user;
     var credits = user.get("credits");
 
-    if (!__production)
+//    if (!__production)
         console.log('用户积分');
-    if (!__production)
+//    if (!__production)
         console.log(credits);
 
     var thread = request.object;
     var price = thread.get('price');
 
-    if (!__production)
+//    if (!__production)
         console.log('悬赏积分');
-    if (!__production)
+//    if (!__production)
         console.log(price);
 
     if (credits > price+5)
