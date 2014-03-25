@@ -317,43 +317,43 @@ AV.Cloud.afterSave('Thread', function(request) {
     checkUserNumberOfThreads(user);
 
     //查找规则
-    var crQuery = new AV.Query('CreditRule');
-    crQuery.equalTo('type', type);
-    return crQuery.first().then(function(object){
-
-        creditRuleId = AV.Object.createWithoutData("CreditRule", object.id);
-        _credits = object.get('credits')-price;
-        _experience = object.get('experience');
-
-        //调整积分
-        user.increment('credits',_credits);
-        //调整经验值
-        user.increment('experience',_experience);
-
-        return user.save();
-
-    }).then(function(user){
-
-        //增加积分变更记录
-        var creditRuleLog = new CreditRuleLog();
-        var userId = AV.Object.createWithoutData("_User", user.id);
-        creditRuleLog.set('user',userId);
-        creditRuleLog.set('type',creditRuleId);
-        creditRuleLog.set('accumulativeCredit',_credits);
-        creditRuleLog.set('accumulativeExperience',_experience);
-        return creditRuleLog.save();
-
-    }).then(function(obj){
-
-        console.log('发帖成功');
-        console.dir(obj);
-
-    },function(error){
-
-        console.log('发帖失败');
-        console.dir(error);
-
-    });
+//    var crQuery = new AV.Query('CreditRule');
+//    crQuery.equalTo('type', type);
+//    return crQuery.first().then(function(object){
+//
+//        creditRuleId = AV.Object.createWithoutData("CreditRule", object.id);
+//        _credits = object.get('credits')-price;
+//        _experience = object.get('experience');
+//
+//        //调整积分
+//        user.increment('credits',_credits);
+//        //调整经验值
+//        user.increment('experience',_experience);
+//
+//        return user.save();
+//
+//    }).then(function(user){
+//
+//        //增加积分变更记录
+//        var creditRuleLog = new CreditRuleLog();
+//        var userId = AV.Object.createWithoutData("_User", user.id);
+//        creditRuleLog.set('user',userId);
+//        creditRuleLog.set('type',creditRuleId);
+//        creditRuleLog.set('accumulativeCredit',_credits);
+//        creditRuleLog.set('accumulativeExperience',_experience);
+//        return creditRuleLog.save();
+//
+//    }).then(function(obj){
+//
+//        console.log('发帖成功');
+//        console.dir(obj);
+//
+//    },function(error){
+//
+//        console.log('发帖失败');
+//        console.dir(error);
+//
+//    });
 });
 
 //删除主题
