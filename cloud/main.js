@@ -553,53 +553,54 @@ AV.Cloud.afterDelete("Comment", function(request) {
 
 //收藏主题or取消收藏主题
 AV.Cloud.afterUpdate("UserFavicon", function(request) {
-    var user = request.user;
-    var userFavicon = request.object;
-
-    var userQ = new AV.Query(User);
-    userQ.equalTo("objectId", user.id);
-    userQ.include('userCount');
-    userQ.include('userFavicon');
-    userQ.first().then(function(user){
-
-
-        var userFavicon = user.get('userFavicon');
-        var userTFR = userFavicon.relation('threads');
-        return userTFR.query().find();
-//        return userFR.query().count();
-
-        }).then(function(objects){
-
-            //收藏主题or取消收藏主题
-            var userCount = user.get('userCount');
-            userCount.set('numberOfFavicons',objects.length);
-            return userCount.save();
-
-        }).then(function(userCount) {
-
-            var userFavicon = user.get('userFavicon');
-            var userSFR = userFavicon.relation('supports');
-            return userSFR.query().find();
-//        return userSFR.query().count();
-
-        }).then(function(objects) {
-
-            //收藏主题or取消收藏主题
-//            console.log(objects.length);
-            var userCount = user.get('userCount');
+    console.log("收藏主题or取消收藏主题");
+//    var user = request.user;
+//    var userFavicon = request.object;
+//
+//    var userQ = new AV.Query(User);
+//    userQ.equalTo("objectId", user.id);
+//    userQ.include('userCount');
+//    userQ.include('userFavicon');
+//    userQ.first().then(function(user){
+//
+//
+//        var userFavicon = user.get('userFavicon');
+//        var userTFR = userFavicon.relation('threads');
+//        return userTFR.query().find();
+////        return userFR.query().count();
+//
+//        }).then(function(objects){
+//
+//            //收藏主题or取消收藏主题
+//            var userCount = user.get('userCount');
+//            userCount.set('numberOfFavicons',objects.length);
+//            return userCount.save();
+//
+//        }).then(function(userCount) {
+//
+//            var userFavicon = user.get('userFavicon');
+//            var userSFR = userFavicon.relation('supports');
+//            return userSFR.query().find();
+////        return userSFR.query().count();
+//
+//        }).then(function(objects) {
+//
+//            //收藏主题or取消收藏主题
+////            console.log(objects.length);
+//            var userCount = user.get('userCount');
+////            console.dir(userCount);
+//            userCount.set('numberOfSupports',objects.length);
+//            return userCount.save();
+//
+//        }).then(function(userCount) {
+//
 //            console.dir(userCount);
-            userCount.set('numberOfSupports',objects.length);
-            return userCount.save();
-
-        }).then(function(userCount) {
-
-            console.dir(userCount);
-            console.log("收藏or赞成功！");
-
-        },function(error){
-
-            console.log("收藏or赞失败！");
-
-    });
+//            console.log("收藏or赞成功！");
+//
+//        },function(error){
+//
+//            console.log("收藏or赞失败！");
+//
+//    });
 });
 
