@@ -33,12 +33,10 @@ function checkUserNumberOfThreads(user){
 
         }).then(function(userCount) {
 
-            if (!__production)
             console.log('用户发帖数: '+userCount.get('numberOfThreads'));
 
         },function(error){
 
-            if (!__production)
             console.log('更改用户发帖数失败');
 
         });
