@@ -291,7 +291,7 @@ AV.Cloud.beforeSave('Thread', function(request, response) {
 //    if (!__production)
         console.log(price);
 
-    if (credits > price+5)
+    if (credits >= price+5)
     {
         console.log('积分足够');
         response.success();
