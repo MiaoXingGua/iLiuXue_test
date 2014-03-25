@@ -22,9 +22,9 @@ function checkUserNumberOfThreads(user){
         console.log("用户实际发帖数："+count);
         threadCount = count;
 
-//        return user.fetch;
-//
-//        }).then(function(user) {
+        return user.fetch;
+
+        }).then(function(user) {
 
         var userCount = user.get('userCount');
         console.log("用户显示发帖数："+userCount.get('numberOfThreads'));
