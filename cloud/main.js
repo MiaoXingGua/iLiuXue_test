@@ -101,13 +101,15 @@ function checkUserNumberOfBestPosts(user,done){
     var userId = AV.Object.createWithoutData("_User", user.id);
     var postCount = 0;
 
+    console.dir(userId);
+
     var postQ = new AV.Query(Post);
     postQ.equalTo("postUser", userId);
     postQ.equalTo("state", 1);
     postQ.count().then(function(count){
 
 //        postCount = count;
-
+        console.log(count);
 //        var numberOfBestPosts =
         user.set('numberOfBestPosts',count);
         return user.save();
@@ -120,14 +122,14 @@ function checkUserNumberOfBestPosts(user,done){
 
     }).then(function(user) {
 
-        if (!__production)
+
         console.log('用户最佳回复数: '+user.get('numberOfBestPosts'));
             done(user,null);
 
     },function(error){
 
-        if (!__production)
-        console.log('更改用户最佳回复数失败');
+
+        console.log('保存用户最佳回复数失败');
             done(null,error);
     });
 }
