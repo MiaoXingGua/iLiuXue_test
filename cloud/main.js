@@ -105,7 +105,7 @@ function checkUserNumberOfBestPosts(userId,done){
 
     var postQ = new AV.Query(Post);
     postQ.equalTo("postUser", user);
-    postQ.equalTo("state", 1);
+    postQ.equalTo("state", true);
     postQ.count().then(function(count){
 
 //        postCount = count;
