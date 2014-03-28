@@ -137,7 +137,7 @@ function checkUserNumberOfBestPosts(user,done){
 //检查用户评论数
 function checkUserNumberOfComments(user){
 
-    var userId = AV.Object.createWithoutData("_User", user.id);
+    var userId = AV.Object.createWithoutData("_User", user.get('objectId'));
     var commentCount = 0;
 
     var commentQ = new AV.Query(UserFavicon);
