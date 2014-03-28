@@ -78,7 +78,7 @@ AV.Cloud.define("checkUserNumberOfBestPosts", function(request, response) {
 
     var userId = request.params.userId;
 
-    console.dir(user);
+    console.dir(userId);
     checkUserNumberOfBestPosts(userId,function (success,error){
 
         if (success)
