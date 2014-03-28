@@ -76,10 +76,10 @@ function checkUserNumberOfPosts(user){
 
 AV.Cloud.define("checkUserNumberOfBestPosts", function(request, response) {
 
-    var user = request.params.user;
+    var userId = request.params.userId;
 
     console.dir(user);
-    checkUserNumberOfBestPosts(user,function (success,error){
+    checkUserNumberOfBestPosts(userId,function (success,error){
 
         if (success)
         {
@@ -96,15 +96,15 @@ AV.Cloud.define("checkUserNumberOfBestPosts", function(request, response) {
 });
 
 //检查用户最佳回复数
-function checkUserNumberOfBestPosts(user,done){
+function checkUserNumberOfBestPosts(userId,done){
 
-    var userId = AV.Object.createWithoutData("_User", user.get('objectId'));
+    var user = AV.Object.createWithoutData("_User",userId);
     var postCount = 0;
 
-    console.dir(userId);
+    console.dir(user);
 
     var postQ = new AV.Query(Post);
-    postQ.equalTo("postUser", userId);
+    postQ.equalTo("postUser", user);
     postQ.equalTo("state", 1);
     postQ.count().then(function(count){
 
