@@ -98,7 +98,7 @@ AV.Cloud.define("checkUserNumberOfBestPosts", function(request, response) {
 //检查用户最佳回复数
 function checkUserNumberOfBestPosts(user,done){
 
-    var userId = AV.Object.createWithoutData("_User", user.id);
+    var userId = AV.Object.createWithoutData("_User", user.get('objectId'));
     var postCount = 0;
 
     console.dir(userId);
