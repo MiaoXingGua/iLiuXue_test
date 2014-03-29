@@ -347,11 +347,12 @@ AV.Cloud.define("checkPostNumberOfComments", function(request, response) {
         commentQ.notEqualTo('isDelete',true);
         commentQ.count().then(function(count){
 
+            console.log("主题评论数："+count);
             post.set('numberOfComments',count);
             return post.save();
 
         }).then(function(post) {
-                done(thread,null);
+                done(post,null);
 
             },function(error){
                 done(null,error);
