@@ -136,22 +136,20 @@ AV.Cloud.define("checkUserNumberOfComments", function(request, response) {
         //检查用户评论数
         function checkUserNumberOfComments(userId,done){
 
-            var user = AV.Object.createWithoutData("_User",userId);
-
-            console.dir(user);
-            var commentQ = new AV.Query(Comment);
-            commentQ.equalTo("postUser", user);
-            commentQ.notEqualTo('isDelete',true);
-            commentQ.count().then(function(count){
-                console.log(count);
+//            var user = AV.Object.createWithoutData("_User",userId);
+//
+//            console.dir(user);
+//            var commentQ = new AV.Query(Comment);
+//            commentQ.equalTo("postUser", user);
+//            commentQ.notEqualTo('isDelete',true);
+//            commentQ.count().then(function(count){
+//                console.log(count);
 
                 var user = AV.Object.createWithoutData("_User",userId);
                 user.set('numberOfComments',5);
                 console.dir(user);
 
-                return user.save();
-
-                }).then(function(user) {
+                 user.save().then(function(user) {
                     done(user,null);
 
                 },function(error){
