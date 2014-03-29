@@ -138,12 +138,12 @@ AV.Cloud.define("checkUserNumberOfComments", function(request, response) {
 
             var user = AV.Object.createWithoutData("_User",userId);
 
-
+            console.dir(user);
             var commentQ = new AV.Query(Comment);
             commentQ.equalTo("postUser", user);
             commentQ.notEqualTo('isDelete',true);
             commentQ.count().then(function(count){
-
+                console.log(count);
                 user.set('numberOfComments',count);
                 return user.save();
 
