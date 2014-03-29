@@ -294,7 +294,7 @@ AV.Cloud.define("checkThreadNumberOfPosts", function(request, response) {
                 success: function(thread) {
 
                     var postsQ = thread.relation('posts').query();
-                    postsQ.notEqual('isDelete',true);
+//                    postsQ.notEqual('isDelete',true);
                     postsQ.count({
                         success: function(count) {
                             thread.set('numberOfPosts',count);
