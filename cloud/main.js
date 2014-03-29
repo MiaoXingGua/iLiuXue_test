@@ -69,7 +69,7 @@ AV.Cloud.define("checkUserNumberOfPosts", function(request, response) {
             postQ.notEqualTo('isDelete',true);
             postQ.count().then(function(count){
 
-                user.set('numberOfBestPosts',count);
+                user.set('numberOfPosts',count);
                 return user.save();
 
                 }).then(function(user) {
