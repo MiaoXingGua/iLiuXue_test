@@ -256,7 +256,7 @@ AV.Cloud.define("checkThreadNumberOfPosts", function(request, response) {
     checkThreadNumberOfPosts(threadId,function (success,error){
         if (success)
         {
-            response.success();
+            response.success(success);
         }
         else
         {
@@ -269,12 +269,12 @@ AV.Cloud.define("checkThreadNumberOfPosts", function(request, response) {
         function checkThreadNumberOfPosts(threadId,done){
 
             var thread = AV.Object.createWithoutData("_User",threadId);
-
+            console.dir(thread);
             var postQ = new AV.Query(Post);
             postQ.equalTo("thread", thread);
             postQ.notEqualTo('isDelete',true);
             postQ.count().then(function(count){
-
+                console.log("count : "+count);
                 thread.set('numberOfPosts',count);
                 return thread.save();
 
