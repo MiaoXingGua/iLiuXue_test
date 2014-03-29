@@ -268,25 +268,58 @@ AV.Cloud.define("checkThreadNumberOfPosts", function(request, response) {
         //检查帖子的回复数
         function checkThreadNumberOfPosts(threadId,done){
 
-            var thread = AV.Object.createWithoutData("_User",threadId);
-            console.dir(thread);
-            var postQ = new AV.Query(Post);
-            postQ.equalTo("thread", thread);
-            postQ.notEqualTo('isDelete',true);
-            postQ.count().then(function(count){
-                console.log("count : "+count);
-                thread.set('numberOfPosts',count);
-                return thread.save();
+//            var thread = AV.Object.createWithoutData("_User",threadId);
+//            console.dir(thread);
+//            var postQ = new AV.Query(Post);
+//            postQ.equalTo("thread", thread);
+//            postQ.notEqualTo('isDelete',true);
+//            postQ.count().then(function(count){
+//                console.log("count : "+count);
+//                thread.set('numberOfPosts',count);
+//                return thread.save();
+//
+//            }).then(function(thread) {
+//                    console.log("111111");
+//                    done(thread,null);
+//
+//                },function(error){
+//                    console.log("2222222");
+//                    done(null,error);
+//                });
 
-            }).then(function(thread) {
-                    console.log("111111");
-                    done(thread,null);
 
-                },function(error){
-                    console.log("2222222");
+
+            var threadQ = new AV.Query(Thread);
+            threadQ.get(threadId, {
+                success: function(thread) {
+
+                    var postsQ = thread.relation('posts').query();
+                    postsQ.notEqual('isDelete',true);
+                    postsQ.count({
+                        success: function(count) {
+                            thread.set('numberOfPosts',count);
+                            thread.save().then(function(post) {
+                                done(post,null);
+                            }, function(error) {
+                                console.log("失败3");
+                                done(null,error);
+                            });
+                        },
+                        error: function(error) {
+                            console.log("失败2");
+                            done(null,error);
+                        }
+                    });
+                },
+                error: function(object, error) {
+                    console.log("失败1");
                     done(null,error);
-                });
+                }
+            });
         }
+
+
+
 
 AV.Cloud.define("checkPostNumberOfComments", function(request, response) {
 
