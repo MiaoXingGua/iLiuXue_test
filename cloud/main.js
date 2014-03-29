@@ -279,9 +279,11 @@ AV.Cloud.define("checkThreadNumberOfPosts", function(request, response) {
                 return thread.save();
 
             }).then(function(thread) {
+                    console.log("111111");
                     done(thread,null);
 
                 },function(error){
+                    console.log("2222222");
                     done(null,error);
                 });
         }
