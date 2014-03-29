@@ -140,7 +140,7 @@ AV.Cloud.define("checkUserNumberOfComments", function(request, response) {
 
 
             var commentQ = new AV.Query(Comment);
-            commentQ.equalTo("postUser", userId);
+            commentQ.equalTo("postUser", user);
             commentQ.notEqualTo('isDelete',true);
             commentQ.count().then(function(count){
 
@@ -179,7 +179,7 @@ AV.Cloud.define("checkUserNumberOfSupports", function(request, response) {
                 success: function(user) {
 
                     var supportsQ = user.relation('supports').query();
-                    supportsQ.notEqual('isDelete',true);
+                    supportsQ.notEqualTo('isDelete',true);
                     supportsQ.count({
                         success: function(count) {
                             user.set('numberOfSupports',count);
@@ -226,7 +226,7 @@ AV.Cloud.define("checkUserNumberOfFavicons", function(request, response) {
                 success: function(user) {
 
                     var faviconsQ = user.relation('favicons').query();
-                    faviconsQ.notEqual('isDelete',true);
+                    faviconsQ.notEqualTo('isDelete',true);
                     faviconsQ.count({
                         success: function(count) {
                             user.set('numberOfFavicons',count);
@@ -294,7 +294,7 @@ AV.Cloud.define("checkThreadNumberOfPosts", function(request, response) {
                 success: function(thread) {
 
                     var postsQ = thread.relation('posts').query();
-//                    postsQ.notEqual('isDelete',true);
+//                    postsQ.notEqualTo('isDelete',true);
                     postsQ.count({
                         success: function(count) {
                             thread.set('numberOfPosts',count);
@@ -381,7 +381,7 @@ AV.Cloud.define("checkPostNumberOfSupports", function(request, response) {
                 success: function(post) {
 
                     var supportsQ = post.relation('supports').query();
-                    supportsQ.notEqual('isDelete',true);
+                    supportsQ.notEqualTo('isDelete',true);
                     supportsQ.count({
                         success: function(count) {
                             post.set('numberOfSupports',count);
