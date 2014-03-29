@@ -269,7 +269,7 @@ AV.Cloud.define("checkThreadNumberOfPosts", function(request, response) {
         //检查帖子的回复数
         function checkThreadNumberOfPosts(threadId,done){
 
-            var thread = AV.Object.createWithoutData("_Thread",threadId);
+            var thread = AV.Object.createWithoutData("Thread",threadId);
             console.dir(thread);
             var postQ = new AV.Query(Post);
             postQ.equalTo("thread", thread);
@@ -340,8 +340,9 @@ AV.Cloud.define("checkPostNumberOfComments", function(request, response) {
     //检查回复的评论数
     function checkPostNumberOfComments(postId,done){
 
-        var post = AV.Object.createWithoutData("_Post",postId);
+        var post = AV.Object.createWithoutData("Post",postId);
 
+        console.dir(post);
         var commentQ = new AV.Query(Comment);
         commentQ.equalTo("post", post);
         commentQ.notEqualTo('isDelete',true);
