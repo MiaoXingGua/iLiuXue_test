@@ -1,10 +1,30 @@
-
 var Thread = AV.Object.extend('Thread');
 var Post = AV.Object.extend('Post');
 var Comment = AV.Object.extend('Comment');
 var UserFavicon = AV.Object.extend('UserFavicon');
 var CreditRuleLog = AV.Object.extend('CreditRuleLog');
 var User = AV.Object.extend('_User');
+
+
+AV.Cloud.define("saveUserRelationCount", function(request, response) {
+
+    var userId = request.params.userId;
+    var user = AV.Object.createWithoutData("_User",userId);
+    var numberOfFriends = request.params.numberOfFriends;
+    var numberOfFollows = request.params.numberOfFollows;
+    var numberOfBilaterals = request.params.numberOfBilaterals;
+    user.set('numberOfFriends',numberOfFriends);
+    user.set('numberOfFollows',numberOfFollows);
+    user.set('numberOfBilaterals',numberOfBilaterals);
+    user.save().then(function(user) {
+        
+        response.success(user);
+
+    },function(error){
+        response.error(error);
+    });
+});
+
 
 AV.Cloud.define("checkUserNumberOfThreads", function(request, response) {
 
