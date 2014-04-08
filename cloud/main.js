@@ -408,7 +408,7 @@ AV.Cloud.define("checkPostNumberOfComments", function(request, response) {
 AV.Cloud.define("checkPostNumberOfSupports", function(request, response) {
 
     var postId = request.params.postId;
-    checkPostNumberOfComments(postId,function (success,error){
+    checkPostNumberOfSupports(postId,function (success,error){
         if (success)
         {
             response.success();
