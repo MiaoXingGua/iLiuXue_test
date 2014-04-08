@@ -158,7 +158,7 @@ AV.Cloud.define("checkUserNumberOfComments", function(request, response) {
 
             var user = AV.Object.createWithoutData("_User",userId);
 
-            console.dir(user);
+//            console.dir(user);
             var commentQ = new AV.Query(Comment);
             commentQ.equalTo("postUser", user);
             commentQ.notEqualTo('isDelete',true);
@@ -195,14 +195,38 @@ AV.Cloud.define("checkUserNumberOfSupports", function(request, response) {
         //检查用户赞数
         function checkUserNumberOfSupports(userId,done){
 
+//            var user = AV.Object.createWithoutData("_User",userId);
+//            var supportsQ = user.relation('supports').query();
+//            supportsQ.notEqualTo('isDelete',true);
+//            supportsQ.count({
+//                success: function(count) {
+//                    user.set('numberOfSupports',count);
+//                    user.save().then(function(user) {
+//                        done(user,null);
+//                    }, function(error) {
+//                        console.log("失败3");
+//                        done(null,error);
+//                    });
+//                },
+//                error: function(error) {
+//                    console.log("失败2");
+//                    done(null,error);
+//                }
+//            });
+
             var userQ = new AV.Query(User);
             userQ.get(userId, {
                 success: function(user) {
+
+                    console.dir("user : "+user);
 
                     var supportsQ = user.relation('supports').query();
                     supportsQ.notEqualTo('isDelete',true);
                     supportsQ.count({
                         success: function(count) {
+
+                            console.log("count : "+count);
+
                             user.set('numberOfSupports',count);
                             user.save().then(function(user) {
                                 done(user,null);
@@ -403,10 +427,15 @@ AV.Cloud.define("checkPostNumberOfSupports", function(request, response) {
             postQ.get(postId, {
                 success: function(post) {
 
+                    console.dir("post : " + post);
+
                     var supportsQ = post.relation('supports').query();
                     supportsQ.notEqualTo('isDelete',true);
                     supportsQ.count({
                         success: function(count) {
+
+                            console.log("count : "+count);
+
                             post.set('numberOfSupports',count);
                             post.save().then(function(post) {
                                 done(post,null);
