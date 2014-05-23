@@ -4,7 +4,7 @@ var Comment = AV.Object.extend('Comment');
 var UserFavicon = AV.Object.extend('UserFavicon');
 var CreditRuleLog = AV.Object.extend('CreditRuleLog');
 var User = AV.Object.extend('_User');
-
+var Relation = AV.Object.extend('Relation');
 
 AV.Cloud.define("saveUserRelationCount", function(request, response) {
 
@@ -266,33 +266,27 @@ AV.Cloud.define("checkUserNumberOfFavicons", function(request, response) {
         //检查用户收藏数
         function checkUserNumberOfFavicons(userId,done){
 
-            var userQ = new AV.Query(User);
-            userQ.get(userId, {
-                success: function(user) {
-
-                    var faviconsQ = user.relation('favicons').query();
-                    faviconsQ.notEqualTo('isDelete',true);
-                    faviconsQ.count({
-                        success: function(count) {
-                            user.set('numberOfFavicons',count);
-                            user.save().then(function(user) {
-                                done(user,null);
-                            }, function(error) {
-                                console.log("失败3");
-                                done(null,error);
-                            });
-                        },
-                        error: function(error) {
-                            console.log("失败2");
-                            done(null,error);
-                        }
+            var user = AV.Object.createWithoutData("_User",userId);
+            var relationQ = new AV.Query(Relation);
+            relationQ.equalTo('user',user);
+            relationQ.exists('thread');
+            relationQ.equalTo('type','favicon');
+            relationQ.count({
+                success: function(count) {
+                    user.set('numberOfFavicons',count);
+                    user.save().then(function(user) {
+                        done(user,null);
+                    }, function(error) {
+                        console.log("失败2");
+                        done(null,error);
                     });
                 },
-                error: function(object, error) {
+                error: function(error) {
                     console.log("失败1");
                     done(null,error);
                 }
             });
+
         }
 
 AV.Cloud.define("checkThreadNumberOfPosts", function(request, response) {
