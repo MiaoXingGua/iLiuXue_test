@@ -214,34 +214,55 @@ AV.Cloud.define("checkUserNumberOfSupports", function(request, response) {
 //                }
 //            });
 
-            var userQ = new AV.Query(User);
-            userQ.get(userId, {
-                success: function(user) {
+//            var userQ = new AV.Query(User);
+//            userQ.get(userId, {
+//                success: function(user) {
+//
+//                    console.dir("user : "+user);
+//
+//                    var supportsQ = user.relation('supports').query();
+//                    supportsQ.notEqualTo('isDelete',true);
+//                    supportsQ.count({
+//                        success: function(count) {
+//
+//                            console.log("count : "+count);
+//
+//                            user.set('numberOfSupports',count);
+//                            user.save().then(function(user) {
+//                                done(user,null);
+//                            }, function(error) {
+//                                console.log("失败3");
+//                                done(null,error);
+//                            });
+//                        },
+//                        error: function(error) {
+//                            console.log("失败2");
+//                            done(null,error);
+//                        }
+//                    });
+//                },
+//                error: function(object, error) {
+//                    console.log("失败1");
+//                    done(null,error);
+//                }
+//            });
 
-                    console.dir("user : "+user);
-
-                    var supportsQ = user.relation('supports').query();
-                    supportsQ.notEqualTo('isDelete',true);
-                    supportsQ.count({
-                        success: function(count) {
-
-                            console.log("count : "+count);
-
-                            user.set('numberOfSupports',count);
-                            user.save().then(function(user) {
-                                done(user,null);
-                            }, function(error) {
-                                console.log("失败3");
-                                done(null,error);
-                            });
-                        },
-                        error: function(error) {
-                            console.log("失败2");
-                            done(null,error);
-                        }
+            var user = AV.Object.createWithoutData("_User",userId);
+            var relationQ = new AV.Query(Relation);
+            relationQ.equalTo('user',user);
+            relationQ.exists('post');
+            relationQ.equalTo('type','support');
+            relationQ.count({
+                success: function(count) {
+                    user.set('numberOfSupports',count);
+                    user.save().then(function(user) {
+                        done(user,null);
+                    }, function(error) {
+                        console.log("失败2");
+                        done(null,error);
                     });
                 },
-                error: function(object, error) {
+                error: function(error) {
                     console.log("失败1");
                     done(null,error);
                 }
@@ -414,40 +435,61 @@ AV.Cloud.define("checkPostNumberOfSupports", function(request, response) {
     });
 });
 
-        //检查回复的评论数
+        //检查回复的赞数
         function checkPostNumberOfSupports(postId,done){
 
-            var postQ = new AV.Query(Post);
-            postQ.get(postId, {
-                success: function(post) {
-
-                    console.dir("post : " + post);
-
-                    var supportsQ = post.relation('supports').query();
-                    supportsQ.notEqualTo('isDelete',true);
-                    supportsQ.count({
-                        success: function(count) {
-
-                            console.log("count : "+count);
-
-                            post.set('numberOfSupports',count);
-                            post.save().then(function(post) {
-                                done(post,null);
-                            }, function(error) {
-                                console.log("失败3");
-                                done(null,error);
-                            });
-                        },
-                        error: function(error) {
-                            console.log("失败2");
-                            done(null,error);
-                        }
+            var post = AV.Object.createWithoutData("Post",postId);
+            var relationQ = new AV.Query(Relation);
+            relationQ.equalTo('post',post);
+            relationQ.exists('user');
+            relationQ.equalTo('type','support');
+            relationQ.count({
+                success: function(count) {
+                    post.set('numberOfSupports',count);
+                    post.save().then(function(post) {
+                        done(post,null);
+                    }, function(error) {
+                        console.log("失败2");
+                        done(null,error);
                     });
                 },
-                error: function(object, error) {
+                error: function(error) {
                     console.log("失败1");
                     done(null,error);
                 }
             });
+
+//            var postQ = new AV.Query(Post);
+//            postQ.get(postId, {
+//                success: function(post) {
+//
+//                    console.dir("post : " + post);
+//
+//                    var supportsQ = post.relation('supports').query();
+//                    supportsQ.notEqualTo('isDelete',true);
+//                    supportsQ.count({
+//                        success: function(count) {
+//
+//                            console.log("count : "+count);
+//
+//                            post.set('numberOfSupports',count);
+//                            post.save().then(function(post) {
+//                                done(post,null);
+//                            }, function(error) {
+//                                console.log("失败3");
+//                                done(null,error);
+//                            });
+//                        },
+//                        error: function(error) {
+//                            console.log("失败2");
+//                            done(null,error);
+//                        }
+//                    });
+//                },
+//                error: function(object, error) {
+//                    console.log("失败1");
+//                    done(null,error);
+//                }
+//            });
         }
 
