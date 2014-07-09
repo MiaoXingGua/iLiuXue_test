@@ -493,3 +493,52 @@ AV.Cloud.define("checkPostNumberOfSupports", function(request, response) {
 //            });
         }
 
+AV.Cloud.define("getUserFromSinaWebUid",function(request, response) {
+
+    var uid = request.params.uid;
+    if (uid)
+    {
+        var userQ = new AV.Query(User);
+        userQ.equalTo('username',"sina"+uid);
+        userQ.first({
+            success: function(user) {
+
+                if (user)
+                {
+                    if (!__production) console.log("已存在user");
+                    user.set("password", "sina"+uid+"liuxue");
+                    user.set("userKey", "sina"+uid+"liuxue");
+
+                    user.save(null, {
+                        success: function(user) {
+                            response.success({"username":user.get("username"),"password":user.get("userKey"),"isFirst":false});
+                        },
+                        error: function(user, error) {
+                            response.error(error);
+                        }
+                    });
+                }
+                else
+                {
+                    if (!__production) console.log("不存在user");
+                    var user = new AV.User();
+                    user.set("username", "sina"+uid);
+                    user.set("password", "sina"+uid+"liuxue");
+                    user.set("userKey", "sina"+uid+"liuxue");
+
+                    user.signUp(null, {
+                        success: function(user) {
+                            response.success({"username":user.get("username"),"password":user.get("userKey"),"isFirst":true});
+                        },
+                        error: function(user, error) {
+                            response.error(error);
+                        }
+                    });
+                }
+            },
+            error: function(error) {
+                response.error(error);
+            }
+        });
+    }
+});
