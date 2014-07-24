@@ -71,16 +71,30 @@ var moment = require('moment');
 //    });
 //});
 
+function getDate(datestamp) {
+
+//    console.log(datestamp);
+//    console.log(new Date(parseInt(datestamp * 1000));
+//    console.log(moment.unix(datestamp).toDate());
+
+    return moment.unix(datestamp).toDate();
+}
+
 AV.Cloud.define("isToday", function(request, response) {
 
-//    var date1 =  moment("2014-07-24 00:00:00", "YYYY-MM-DD HH:mm:ss").toDate();
-//    console.log(isToday(date1));
-
-    var date = request.params.date;
+//    var date1 =  moment("2014-07-23 11:04:41", "YYYY-MM-DD HH:mm:ss").toDate();
+    var timestamp = request.params.timestamp;
+    var date = getDate(timestamp);
     response.success(isToday(date));
 
 });
 
+AV.Cloud.define("isTodayTest", function(request, response) {
+
+    var date1 = getDate(1406113481.447);
+    console.log(isToday(date1));
+
+});
 
 function isToday(date)
 {
@@ -88,8 +102,7 @@ function isToday(date)
 
     console.log(date);
     console.log(today);
-
-//    console.log(moment(today).diff(date, 'days'));
+    console.log(moment(today).diff(date, 'days'));
 
     if (moment(today).diff(date, 'years')>0)
     {
