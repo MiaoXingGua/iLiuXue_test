@@ -6,6 +6,112 @@ var CreditRuleLog = AV.Object.extend('CreditRuleLog');
 var User = AV.Object.extend('_User');
 var Relation = AV.Object.extend('Relation');
 
+AV._initialize('rfot8le8vvv49dfwb6o4bwaa5y4sq0jqs038f9ongkzcc9l4', '1wv67cz0mmjo8xzeu5ym1alrbevm317gbjadt0bs2gijqyxs', 'jbabwt9bmr06b8vtngw5f65gtawazjhar7z3ke6lwjabsz74');
+AV.Cloud.useMasterKey();
+
+
+//时间
+var moment = require('moment');
+
+//AV.Cloud.define("userInfoToUser", function(request, response) {
+//
+//    var userQ = new AV.Query(User);
+//    userQ.exists("userInfo");
+//    userQ.include("userInfo");
+//    userQ.find({
+//        success: function(users) {
+//
+//            var userList = [];
+//            for (var i in users)
+//            {
+//                var user = users[i];
+//                var userInfo = user.get("userInfo");
+//                var album = userInfo.relation('album');
+//                album.query
+//                if (album)
+//                {
+////                    user.set('brithday',userInfo.get("brithday"));
+////                    user.set('affectiveState',userInfo.get("affectiveState"));
+////                    user.set('telephone',userInfo.get("telephone"));
+////                    user.set('mobile',userInfo.get("mobile"));
+////                    user.set('address',userInfo.get("address"));
+////                    user.set('zipcode',userInfo.get("zipcode"));
+////                    user.set('nationality',userInfo.get("nationality"));
+////                    user.set('brithProvince',userInfo.get("brithProvince"));
+////                    user.set('graduateSchool',userInfo.get("graduateSchool"));
+////                    user.set('company',userInfo.get("company"));
+////                    user.set('education',userInfo.get("education"));
+////                    user.set('bloodType',userInfo.get("bloodType"));
+////                    user.set('QQ',userInfo.get("QQ"));
+////                    user.set('MSN',userInfo.get("MSN"));
+////                    user.set('interest',userInfo.get("interest"));
+//                    user.set('album',userInfo.get("album"));
+//                    var album = user.relation('album');
+//                    album.add();
+//
+//                }
+//                userList.push(user);
+//            }
+//
+//
+//            AV.Object.saveAll(userList, {
+//                success: function(list) {
+//                    // All the objects were saved.
+//                    console.log("成功");
+//                },
+//                error: function(error) {
+//                    // An error occurred while saving one of the objects.
+//                    console.log("失败");
+//                }
+//            });
+//        },
+//        error: function(error) {
+//            // There was an error.
+//        }
+//    });
+//});
+
+AV.Cloud.define("isToday", function(request, response) {
+
+//    var date1 =  moment("2014-07-24 00:00:00", "YYYY-MM-DD HH:mm:ss").toDate();
+//    console.log(isToday(date1));
+
+    var date = request.params.date;
+    response.success(isToday(date));
+
+});
+
+
+function isToday(date)
+{
+    var today = new Date();
+
+    console.log(date);
+    console.log(today);
+
+//    console.log(moment(today).diff(date, 'days'));
+
+    if (moment(today).diff(date, 'years')>0)
+    {
+        console.log('years');
+        return false;
+    }
+    else if (moment(today).diff(date, 'months')>0)
+    {
+        console.log('months');
+        return false;
+    }
+    else if (moment(today).diff(date, 'days')>0)
+    {
+        console.log('days');
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
 AV.Cloud.define("saveUserRelationCount", function(request, response) {
 
     var userId = request.params.userId;
