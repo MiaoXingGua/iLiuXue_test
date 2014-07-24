@@ -83,16 +83,20 @@ function getDate(datestamp) {
 AV.Cloud.define("isToday", function(request, response) {
 
 //    var date1 =  moment("2014-07-23 11:04:41", "YYYY-MM-DD HH:mm:ss").toDate();
-    var timestamp = request.params.timestamp;
-    var date = getDate(timestamp);
-    response.success(isToday(date));
+//    request.user.get('updatedAt');
+//    var timestamp = request.params.timestamp;
+//    var date = getDate(timestamp);
+    response.success(isToday(request.user.get('updatedAt')));
 
 });
 
 AV.Cloud.define("isTodayTest", function(request, response) {
 
     var date1 = getDate(1406113481.447);
-    console.log(isToday(date1));
+    var date2 =  moment("2014-07-23 11:04:41", "YYYY-MM-DD HH:mm:ss").toDate();
+    console.log(date1);
+    console.log(date2);
+//    console.log(isToday(date1));
 
 });
 
